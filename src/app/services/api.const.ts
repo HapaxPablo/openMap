@@ -1,3 +1,5 @@
 const devHost = 'http://localhost:3000/api'
 
-export const MARKER = `${devHost}/marker`
+export const MARKERS = `${devHost}/marker`
+export const MARKER = (id: string) =>
+  `${devHost}/marker/${id}/`;
