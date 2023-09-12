@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { MarkerService } from './services/marker.service';
@@ -8,21 +8,29 @@ import { take } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
   houseNumber: number;
   road: string;
   nameAddress: string = '';
+  isVisible: boolean;
 
-  constructor(private mapService: MapService, private markerService: MarkerService) {}
+  constructor(
+    private mapService: MapService,
+    private markerService: MarkerService
+  ) {
+    this.mapService.isVisible$.pipe(take(1)).subscribe((result) => {
+      this.isVisible = result;
+    });
+  }
 
   onMapReady(map: L.Map) {
     this.markerService.getMarkers().subscribe((markers) => {
       this.mapService.initMap(map);
       markers.forEach(this.mapService.addMarker);
-      console.log(markers)
+      console.log(markers);
     });
   }
 
@@ -35,28 +43,23 @@ export class AppComponent {
   subOnInfo(event: L.LeafletMouseEvent) {
     const lat = event.latlng.lat;
     const lng = event.latlng.lng;
-    this.mapService.houseNumber$.pipe(
-      take(1)
-    ).subscribe((houseNumber) => {
+    this.mapService.houseNumber$.pipe(take(1)).subscribe((houseNumber) => {
       this.houseNumber = houseNumber;
     });
 
-    this.mapService.road$.pipe(
-      take(1)
-    ).subscribe((road) => {
+    this.mapService.road$.pipe(take(1)).subscribe((road) => {
       this.road = road;
-      this.nameAddress = `${this.road}, д. ${this.houseNumber}`
+      this.nameAddress = `${this.road}, д. ${this.houseNumber}`;
       const sendData: TCreateMarkerBody = {
         name: this.nameAddress,
         rate: 4,
         lat: lat,
         long: lng,
-      }
+      };
       //this.markerService.createMarker(sendData).subscribe();
-    })
-
+    });
   }
-    /*
+  /*
       Данные отправяться с первого раза, так как houseNumber уже некстован.
       Если вынести sendData и createMarker, то первый раз отправится пустой address.
     */

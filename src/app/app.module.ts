@@ -2,22 +2,21 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { HttpClientModule } from '@angular/common/http';
-
 import { AppComponent } from './app.component';
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
-import { SideBarComponent } from './side-bar/side-bar.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatDialog, MatDialogModule} from '@angular/material/dialog';
-import {MatButtonModule} from '@angular/material/button';
-
-
+import { ModalWinModule } from './modal-win/modal-win.module';
 @NgModule({
-  declarations: [
-    AppComponent,
-    SideBarComponent
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    LeafletModule,
+    HttpClientModule,
+    LeafletDrawModule,
+    BrowserAnimationsModule,
+    ModalWinModule,
   ],
-  imports: [BrowserModule, LeafletModule, HttpClientModule, LeafletDrawModule, BrowserAnimationsModule, MatButtonModule, MatDialogModule],
+  bootstrap: [AppComponent],
   providers: [],
-  bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
