@@ -1,23 +1,28 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Component, Injectable, NgZone } from '@angular/core';
 import * as L from 'leaflet';
-import { BehaviorSubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
+import { TMarker } from './interfaces/marker.interface';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog'
+import { MatButtonModule } from '@angular/material/button';
+import { SideBarComponent } from '../side-bar/side-bar.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-  private _map: L.Map | null = null;
-  house_number: number | null = null;
-  road: string | null = '';
+  private _map: L.Map;
+  private _markerLayer: L.FeatureGroup;
+  house_number: number;
+  road: string;
 
-  private houseNumberSubject = new BehaviorSubject<number | null>(null);
+  private houseNumberSubject = new ReplaySubject<number>(1);
   houseNumber$ = this.houseNumberSubject.asObservable();
 
-  private roadSubject = new BehaviorSubject<string | null>('');
+  private roadSubject = new ReplaySubject<string>(1);
   road$ = this.roadSubject.asObservable();
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient, public dialog: MatDialog, private _zone: NgZone) {}
 
   public mapOpt(): L.MapOptions {
     return {
@@ -33,9 +38,14 @@ export class MapService {
       center: L.latLng(56.01488, 92.86846)
     };
   }
+
   public initMap(mapObj: L.Map): void {
     this._map = mapObj;
+    this._markerLayer = L.featureGroup();
+    this._markerLayer.addTo(this._map);
   }
+
+  
 
   public onMapClick(event: L.LeafletMouseEvent): void {
     if (this._map) {
@@ -44,6 +54,22 @@ export class MapService {
       console.error("Map is not initialized.");
     }
   }
+
+  public onMarkerClick(marker: TMarker): void{
+    const dialogRef = this.dialog.open(SideBarComponent, {
+      width: '529px',
+      height: '203px'
+    });
+
+  }
+
+  public addMarker = (marker: TMarker): void => {
+    const addMarker = L.marker(L.latLng(marker.lat, marker.long));
+    addMarker.addTo(this._markerLayer);
+    addMarker.on('click', () => {
+      this._zone.run(() => this.onMarkerClick(marker));
+    });
+}
 
   getBuildingVertices(event: L.LeafletMouseEvent) {
     const lat = event.latlng.lat;
@@ -63,6 +89,7 @@ export class MapService {
           this.road = address.road;
           this.houseNumberSubject.next(this.house_number);
           this.roadSubject.next(this.road);
+          console.log(this.house_number, this.road)
         }
       });
   }

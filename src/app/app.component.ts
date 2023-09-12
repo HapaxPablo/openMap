@@ -3,50 +3,61 @@ import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { MarkerService } from './services/marker.service';
 import { TCreateMarkerBody } from './services/interfaces/marker.interface';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
-  houseNumber: number | null = null;
-  road: string | null = '';
+  houseNumber: number;
+  road: string;
+  nameAddress: string = '';
 
-  constructor(private mapService: MapService, private markerService: MarkerService){}
+  constructor(private mapService: MapService, private markerService: MarkerService) {}
 
-  ngOnInit(): void {
-    this.mapService.houseNumber$.subscribe((houseNumber) => {
-      this.houseNumber = houseNumber;
-    });
-
-    this.mapService.road$.subscribe((road) => {
-      this.road = road;
-    });
-  }
-  
   onMapReady(map: L.Map) {
-    this.mapService.initMap(map);
+    this.markerService.getMarkers().subscribe((markers) => {
+      this.mapService.initMap(map);
+      markers.forEach(this.mapService.addMarker);
+      console.log(markers)
+    });
   }
 
   onClickMap(event: L.LeafletMouseEvent): void {
+    this.subOnInfo(event);
     this.mapService.onMapClick(event);
     this.mapService.getBuildingVertices(event);
-    const lat = event.latlng.lat;
-    const lng = event.latlng.lng;
-    const nameAddress = `${this.road}, д. ${this.houseNumber}`
-    const sendData: TCreateMarkerBody = {
-      name: nameAddress,
-      rate: 4,
-      lat: lat,
-      long: lng,
-    }
-    this.markerService.createMarker(sendData).subscribe({
-      complete: () => {
-        console.log(sendData)
-      }
-    })
   }
 
+  subOnInfo(event: L.LeafletMouseEvent) {
+    const lat = event.latlng.lat;
+    const lng = event.latlng.lng;
+    this.mapService.houseNumber$.pipe(
+      take(1)
+    ).subscribe((houseNumber) => {
+      this.houseNumber = houseNumber;
+    });
+
+    this.mapService.road$.pipe(
+      take(1)
+    ).subscribe((road) => {
+      this.road = road;
+      this.nameAddress = `${this.road}, д. ${this.houseNumber}`
+      const sendData: TCreateMarkerBody = {
+        name: this.nameAddress,
+        rate: 4,
+        lat: lat,
+        long: lng,
+      }
+      //this.markerService.createMarker(sendData).subscribe();
+    })
+
+  }
+    /*
+      Данные отправяться с первого раза, так как houseNumber уже некстован.
+      Если вынести sendData и createMarker, то первый раз отправится пустой address.
+    */
 }
