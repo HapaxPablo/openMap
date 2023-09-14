@@ -3,6 +3,8 @@ import { Injectable, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import { ReplaySubject } from 'rxjs';
 import { TMarker } from './interfaces/marker.interface';
+import { CustomModalService } from './custom-modal.service';
+import { MarkerService } from './marker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +15,7 @@ export class MapService {
   house_number: number;
   road: string;
   isVisible: boolean = false;
+  private nameAddress: string = '';
 
   private houseNumberSubject = new ReplaySubject<number>(1);
   houseNumber$ = this.houseNumberSubject.asObservable();
@@ -23,7 +26,10 @@ export class MapService {
   private isVisibleSubject = new ReplaySubject<boolean>();
   isVisible$ = this.isVisibleSubject.asObservable();
 
-  constructor(private _http: HttpClient, private _zone: NgZone) {}
+  private nameAddressSubject = new ReplaySubject<string>(1);
+  nameAddress$ = this.nameAddressSubject.asObservable();
+
+  constructor(private _http: HttpClient, private _zone: NgZone, private customModal: CustomModalService, private markerService: MarkerService) {}
 
   public mapOpt(): L.MapOptions {
     return {
@@ -46,18 +52,7 @@ export class MapService {
     this._markerLayer.addTo(this._map);
   }
 
-  public onMapClick(event: L.LeafletMouseEvent): void {
-    if (this._map) {
-      L.marker(event.latlng).addTo(this._map);
-    } else {
-      console.error('Map is not initialized.');
-    }
-  }
 
-  public onMarkerClick(marker: TMarker): void {
-    this.isVisible = true;
-    this.isVisibleSubject.next(this.isVisible);
-  }
 
   public addMarker = (marker: TMarker): void => {
     const addMarker = L.marker(L.latLng(marker.lat, marker.long));
@@ -65,9 +60,10 @@ export class MapService {
     addMarker.on('click', () => {
       this._zone.run(() => this.onMarkerClick(marker));
     });
+
   };
 
-  getBuildingVertices(event: L.LeafletMouseEvent) {
+  getBuildingVertices(event: L.LeafletMouseEvent){
     const lat = event.latlng.lat;
     const lng = event.latlng.lng;
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&addressdetails=1&polygon_geojson=1&format=geojson`;
@@ -82,11 +78,24 @@ export class MapService {
       if (address) {
         this.house_number = address.house_number;
         this.road = address.road;
+        this.nameAddress = `${this.road}, д. ${this.house_number}`;
         this.houseNumberSubject.next(this.house_number);
         this.roadSubject.next(this.road);
-        console.log(this.house_number, this.road);
+        this.customModal.MarkerModal(this.nameAddress, lat, lng);
       }
     });
+  }
+
+  public onMapClick(event: L.LeafletMouseEvent): void {
+    if (this._map) {
+      L.marker(event.latlng).addTo(this._map);
+    } else {
+      console.error('Map is not initialized.');
+    }
+  }
+
+  public onMarkerClick(marker: TMarker): void {
+    this.customModal.getInfoMarkerModal(marker.name, marker.rate);
   }
 
   private highlightBuilding(vertices: number[][]): void {
