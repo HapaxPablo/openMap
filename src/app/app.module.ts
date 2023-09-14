@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalWinModule } from './modal-win/modal-win.module';
+import { NzRateModule } from 'ng-zorro-antd/rate';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -15,6 +17,8 @@ import { ModalWinModule } from './modal-win/modal-win.module';
     LeafletDrawModule,
     BrowserAnimationsModule,
     ModalWinModule,
+    NzRateModule,
+    FormsModule
   ],
   bootstrap: [AppComponent],
   providers: [],
