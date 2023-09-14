@@ -30,7 +30,6 @@ export class AppComponent {
     this.markerService.getMarkers().subscribe((markers) => {
       this.mapService.initMap(map);
       markers.forEach(this.mapService.addMarker);
-      console.log(markers);
     });
   }
 
@@ -49,18 +48,6 @@ export class AppComponent {
 
     this.mapService.road$.pipe(take(1)).subscribe((road) => {
       this.road = road;
-      this.nameAddress = `${this.road}, д. ${this.houseNumber}`;
-      const sendData: TCreateMarkerBody = {
-        name: this.nameAddress,
-        rate: 4,
-        lat: lat,
-        long: lng,
-      };
-      //this.markerService.createMarker(sendData).subscribe();
     });
   }
-  /*
-      Данные отправяться с первого раза, так как houseNumber уже некстован.
-      Если вынести sendData и createMarker, то первый раз отправится пустой address.
-    */
 }
