@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NZ_I18N, ru_RU } from 'ng-zorro-antd/i18n';
 import { NZ_ICONS } from 'ng-zorro-antd/icon';
+import { NzRateModule } from 'ng-zorro-antd/rate';
 
 const antDesignIcons = AllIcons as {
   [key: string]: IconDefinition;
@@ -18,11 +19,12 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(
 
 @NgModule({
   declarations: [ModalWinComponent],
-  imports: [BrowserModule, NzModalModule, FormsModule, BrowserAnimationsModule],
+  imports: [BrowserModule, NzModalModule, FormsModule, BrowserAnimationsModule, NzRateModule],
   providers: [
     { provide: NZ_I18N, useValue: ru_RU },
     { provide: NZ_ICONS, useValue: icons },
   ],
   exports: [ModalWinComponent],
+  bootstrap: [ModalWinComponent]
 })
 export class ModalWinModule {}

@@ -19,8 +19,8 @@ export class MarkerService {
     return this._http.get<TMarkerDTO[]>(MARKERS).pipe(map((groupedMarkers)=>groupedMarkers.map(markerTransformer)))
   }
 
-  getMarkerById(id: number):Observable<TMarker> {
-    return this._http.get<TMarkerDTO>(MARKER(id.toString())).pipe(map(markerTransformer))
+  getMarkerById(_id: string):Observable<TMarker> {
+    return this._http.get<TMarkerDTO>(MARKER(_id.toString())).pipe(map(markerTransformer))
   }
 
 }

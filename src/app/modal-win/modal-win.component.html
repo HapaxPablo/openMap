@@ -1,13 +1,1 @@
- <nz-modal
-  [(nzVisible)]="isVisible"
-  nzOkText="Ok"
-  nzCancelText="Cancel"
-  (nzOnOk)="handleOk()"
-  (nzOnCancel)="handleCancel()"
-  nzClassName="my-modal">
-  <ng-container *nzModalContent>
-    <p>Bla bla ...</p>
-    <p>Bla bla ...</p>
-    <p>Bla bla ...</p>
-  </ng-container>
-</nz-modal>
+<nz-rate *ngIf="showInfo" [ngModel]="rate" [nzAllowHalf]="true" [nzDisabled]="true"></nz-rate>
