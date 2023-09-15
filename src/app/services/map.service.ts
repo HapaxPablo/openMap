@@ -14,8 +14,7 @@ export class MapService {
   private _markerLayer: L.FeatureGroup;
   house_number: number;
   road: string;
-  isVisible: boolean = false;
-  private nameAddress: string = '';
+  private nameAddress: string;
 
   private houseNumberSubject = new ReplaySubject<number>(1);
   houseNumber$ = this.houseNumberSubject.asObservable();
@@ -23,13 +22,10 @@ export class MapService {
   private roadSubject = new ReplaySubject<string>(1);
   road$ = this.roadSubject.asObservable();
 
-  private isVisibleSubject = new ReplaySubject<boolean>();
-  isVisible$ = this.isVisibleSubject.asObservable();
-
   private nameAddressSubject = new ReplaySubject<string>(1);
   nameAddress$ = this.nameAddressSubject.asObservable();
 
-  constructor(private _http: HttpClient, private _zone: NgZone, private customModal: CustomModalService, private markerService: MarkerService) {}
+  constructor(private _http: HttpClient, private _zone: NgZone, private customModal: CustomModalService) {}
 
   public mapOpt(): L.MapOptions {
     return {
@@ -52,10 +48,8 @@ export class MapService {
     this._markerLayer.addTo(this._map);
   }
 
-
-
   public addMarker = (marker: TMarker): void => {
-    const addMarker = L.marker(L.latLng(marker.lat, marker.long));
+    const addMarker = L.marker(L.latLng(marker.location.lat, marker.location.long));
     addMarker.addTo(this._markerLayer);
     addMarker.on('click', () => {
       this._zone.run(() => this.onMarkerClick(marker));
@@ -95,7 +89,7 @@ export class MapService {
   }
 
   public onMarkerClick(marker: TMarker): void {
-    this.customModal.getInfoMarkerModal(marker.name, marker.rate);
+    this.customModal.getInfoMarkerModal(marker.name, marker.rate, marker.location.name_address, marker.barrier_free_elements);
   }
 
   private highlightBuilding(vertices: number[][]): void {
