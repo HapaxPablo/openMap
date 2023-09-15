@@ -8,12 +8,20 @@ import { TCreateMarkerBody } from './interfaces/marker.interface';
   providedIn: 'root'
 })
 export class CustomModalService {
-
-
   showInfo: boolean = false;
   addInfo: boolean = false;
-  
+
+  markerName: string | null;
+  rate: number | null;
+  indeterminateItems: string[];
+
   constructor(private _modalService: NzModalService, private markerService: MarkerService) { }
+
+  saveInfoMarker(markerName: string, rating: number, indeterminateItems: string[]) {
+    this.markerName = markerName;
+    this.rate = rating;
+    this.indeterminateItems = indeterminateItems;
+  }
 
   MarkerModal(nameAddress: string, lat: number, lng: number): void {
     const modal: NzModalRef = this._modalService.create({
@@ -24,16 +32,15 @@ export class CustomModalService {
           label: 'Отменить',
           shape: 'round',
           onClick: () => {
-            console.log('exit');
             modal.destroy();
             nameAddress = '';
           },
         },
         {
           label: 'Добавить',
+          shape: 'round',
           type: 'primary',
           onClick: () => {
-            console.log('confirm');
             modal.destroy();
             this.addInfoMarkerModal(nameAddress, lat, lng)
           },
@@ -42,45 +49,90 @@ export class CustomModalService {
     });
   }
 
-  addInfoMarkerModal(nameAddress: string, lat: number, lng: number):void{
+  addInfoMarkerModal(nameAddress: string, lat: number, lng: number): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: nameAddress,
+      nzContent: ModalWinComponent,
       nzFooter: [
         {
           label: 'Отменить',
           shape: 'round',
           onClick: () => {
-            console.log('exit');
             modal.destroy();
             nameAddress = '';
           },
         },
         {
-          label: 'Добавить',
+          label: 'Сохранить',
           type: 'primary',
-          onClick: () => {
-            console.log('confirm');
+          shape: 'round',
+          onClick: (modalWinComponent: ModalWinComponent) => {
+            modalWinComponent.passDataToService()
             const sendData: TCreateMarkerBody = {
-              name: nameAddress,
-              lat: lat,
-              long: lng,
-              rate: 4,
+              name: this.markerName,
+              location: {
+                lat: lat,
+                long: lng,
+                name_address: nameAddress,
+              },
+              rate: this.rate,
+              barrier_free_elements: this.indeterminateItems
             };
             this.markerService.createMarker(sendData).subscribe({
               error: (error) => {
-                alert(error);
+                this.errorMessageModal();
               },
               complete: () => {
                 modal.destroy();
+                this.completeMessageModal();
+                console.log(sendData)
+                this.markerName = null
+                this.rate = null
+                this.indeterminateItems = []
               },
             })
           },
         },
       ],
     });
+    modal.componentInstance!.addInfo = true;
   }
 
-  getInfoMarkerModal(name: string, rate: number): void {
+  completeMessageModal(): void {
+    const modal: NzModalRef = this._modalService.create({
+      nzTitle: "Успешно",
+      nzContent: "Ваш маркер был успешно добавлен",
+      nzFooter: [
+        {
+          label: 'Закрыть',
+          shape: 'round',
+          type: 'primary',
+          onClick: () => {
+            modal.destroy();
+          }
+        }
+      ]
+    })
+  }
+
+  errorMessageModal(): void{
+    const modal: NzModalRef = this._modalService.create({
+      nzTitle: "Ошибка!!!",
+      nzContent: "Проверьте что вы заполнили все поля!!!",
+      nzFooter: [
+        {
+          label: 'Закрыть',
+          shape: 'round',
+          type: 'primary',
+          onClick: () => {
+            modal.destroy();
+          }
+        }
+      ]
+    })
+  }
+
+  getInfoMarkerModal(name: string, rate: number, nameAddress: string, barrierFreeElements: string[]): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: name,
       nzContent: ModalWinComponent,
@@ -89,14 +141,16 @@ export class CustomModalService {
         {
           label: 'Закрыть',
           shape: 'round',
+          type: 'primary',
           onClick: () => {
-            console.log('exit');
             modal.destroy();
           },
         },
       ],
     });
+    modal.componentInstance!.barrierFreeElements = barrierFreeElements;
     modal.componentInstance!.rate = rate;
+    modal.componentInstance!.nameAddress = nameAddress;
     modal.componentInstance!.showInfo = true;
   }
 }
