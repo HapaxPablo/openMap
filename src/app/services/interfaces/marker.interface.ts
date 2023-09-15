@@ -2,8 +2,12 @@ export type TMarkerDTO = {
     _id: string;
     name: string;
     rate: number;
-    lat: number;
-    long: number;
+    location: {
+        lat: number;
+        long: number;
+        name_address: string;
+    },
+    barrier_free_elements: string[]
 }
 
 export type TMarker = TMarkerDTO;
@@ -13,36 +17,44 @@ export const markerTransformer = (DTO: TMarkerDTO): TMarker => {
         _id: DTO._id,
         name: DTO.name,
         rate: DTO.rate,
-        lat: DTO.lat,
-        long: DTO.long,
+        location: DTO.location,
+        barrier_free_elements: DTO.barrier_free_elements
     }
 
 }
 
 export type TCreateMarkerBodyDTO = {
     _id?: string;
-    name: string;
-    rate: number;
-    lat: number;
-    long: number;
+    name: string | null;
+    rate: number | null;
+    location: {
+        lat: number;
+        long: number;
+        name_address: string;
+    };
+    barrier_free_elements: string[] | null
 }
 
-export type TCreateMarkerBody= {
+export type TCreateMarkerBody = {
     _id?: string;
-    name: string;
-    rate: number;
-    lat: number;
-    long: number;
+    name: string | null;
+    rate: number | null;
+    location: {
+        lat: number;
+        long: number;
+        name_address: string;
+    };
+    barrier_free_elements: string[] | null
 }
 
 export const createMarkerBody = (
-    body:TCreateMarkerBody
+    body: TCreateMarkerBody
 ): TCreateMarkerBodyDTO => {
     return {
         _id: body._id,
         name: body.name,
         rate: body.rate,
-        lat: body.lat,
-        long: body.long,
+        location: body.location,
+        barrier_free_elements: body.barrier_free_elements
     }
 }
