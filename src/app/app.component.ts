@@ -14,17 +14,12 @@ export class AppComponent {
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
   houseNumber: number;
   road: string;
-  nameAddress: string = '';
-  isVisible: boolean;
+  nameAddress: string;
 
   constructor(
     private mapService: MapService,
     private markerService: MarkerService
-  ) {
-    this.mapService.isVisible$.pipe(take(1)).subscribe((result) => {
-      this.isVisible = result;
-    });
-  }
+  ) {}
 
   onMapReady(map: L.Map) {
     this.markerService.getMarkers().subscribe((markers) => {
