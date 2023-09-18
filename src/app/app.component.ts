@@ -24,7 +24,7 @@ export class AppComponent {
   onMapReady(map: L.Map) {
     this.markerService.getMarkers().subscribe((markers) => {
       this.mapService.initMap(map);
-      markers.forEach(this.mapService.addMarker);
+      markers.forEach((marker) => {this.mapService.addMarker(marker)} );
     });
   }
 
