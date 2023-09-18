@@ -9,7 +9,6 @@ export type TMarkerDTO = {
     },
     barrier_free_elements: string[]
 }
-
 export type TMarker = TMarkerDTO;
 
 export const markerTransformer = (DTO: TMarkerDTO): TMarker => {
@@ -55,6 +54,39 @@ export const createMarkerBody = (
         name: body.name,
         rate: body.rate,
         location: body.location,
+        barrier_free_elements: body.barrier_free_elements
+    }
+}
+
+export type TPatchMarkerDTO = {
+    _id: string;
+    name: string;
+    rate: number;
+    barrier_free_elements: string[]
+}
+export type TPatchMarker = TPatchMarkerDTO;
+
+export type TPatchMarkerBodyDTO = {
+    _id: string;
+    name: string;
+    rate: number;
+    barrier_free_elements: string[]
+}
+
+export type TPatchMarkerBody = {
+    _id: string;
+    name: string;
+    rate: number;
+    barrier_free_elements: string[]
+}
+
+export const patchMarkerBody = (
+    body: TPatchMarkerBody
+): TPatchMarkerBodyDTO => {
+    return {
+        _id: body._id,
+        name: body.name,
+        rate: body.rate,
         barrier_free_elements: body.barrier_free_elements
     }
 }
