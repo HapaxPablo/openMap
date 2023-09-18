@@ -90,3 +90,10 @@ export const patchMarkerBody = (
         barrier_free_elements: body.barrier_free_elements
     }
 }
+
+export type TMarkerForm = {
+    markerName: string;
+    rating: number | null;
+    barrierFree: { label: string; value: string; checked: boolean }[];
+    
+  };

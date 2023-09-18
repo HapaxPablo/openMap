@@ -14,6 +14,7 @@ export class MapService {
   house_number: number;
   road: string;
   private nameAddress: string;
+  isLoadingMapInit = true;
 
   private houseNumberSubject = new ReplaySubject<number>(1);
   houseNumber$ = this.houseNumberSubject.asObservable();
@@ -45,6 +46,7 @@ export class MapService {
     this._map = mapObj;
     this._markerLayer = L.featureGroup();
     this._markerLayer.addTo(this._map);
+    this.isLoadingMapInit = false;
   }
 
   public addMarker = (marker: TMarker): void => {
