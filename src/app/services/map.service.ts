@@ -2,9 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import { ReplaySubject } from 'rxjs';
-import { TMarker } from './interfaces/marker.interface';
+import {  TMarker } from './interfaces/marker.interface';
 import { CustomModalService } from './custom-modal.service';
-import { MarkerService } from './marker.service';
 
 @Injectable({
   providedIn: 'root',
@@ -89,7 +88,7 @@ export class MapService {
   }
 
   public onMarkerClick(marker: TMarker): void {
-    this.customModal.getInfoMarkerModal(marker.name, marker.rate, marker.location.name_address, marker.barrier_free_elements);
+    this.customModal.getInfoMarkerModal(marker.name, marker.rate, marker.location.name_address, marker.barrier_free_elements, marker._id);
   }
 
   private highlightBuilding(vertices: number[][]): void {
