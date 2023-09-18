@@ -45,3 +45,30 @@
     ></nz-checkbox-group>
   </div>
 </div>
+
+<div *ngIf="updateInfo" class="container">
+  <div class="container_input">
+    <p class="container_input_label">Наименование объекта</p>
+    <input
+      [formControl]="markerForm.controls.markerName"
+      nz-input
+      placeholder={{name}}
+      nzSize="small"
+      style="max-width: 180px"
+    >
+  </div>
+  <div class="container_rating">
+    <p class="container_rating_label">Рейтинг</p>
+    <nz-rate
+      *ngIf="updateInfo"
+      [formControl]="markerForm.controls.rating"
+    ></nz-rate>
+  </div>
+  <div class="container_check" [formGroup]="markerForm">
+    <p class="container_check_label">Безбарьерная среда</p>
+    <br />
+    <nz-checkbox-group
+      [formControl]="markerForm.controls.barrierFree"
+    ></nz-checkbox-group>
+  </div>
+</div>

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { TCreateMarkerBody, TMarker, TMarkerDTO, createMarkerBody, markerTransformer } from './interfaces/marker.interface';
+import { TCreateMarkerBody, TMarker, TMarkerDTO, TPatchMarker, TPatchMarkerBody, TPatchMarkerDTO, createMarkerBody, markerTransformer, patchMarkerBody } from './interfaces/marker.interface';
 import { Observable, map } from 'rxjs';
 import { MARKER, MARKERS } from './api.const';
 
@@ -22,5 +22,11 @@ export class MarkerService {
   getMarkerById(_id: string):Observable<TMarker> {
     return this._http.get<TMarkerDTO>(MARKER(_id.toString())).pipe(map(markerTransformer))
   }
+
+  patchMarkerById(_id: string, data: TPatchMarkerBody): Observable<TPatchMarker>{
+    const body = patchMarkerBody(data);
+    return this._http.patch<TPatchMarkerDTO>(MARKER(_id.toString()), body).pipe(map(patchMarkerBody))
+  }
+
 
 }

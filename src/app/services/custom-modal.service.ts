@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ModalWinComponent } from '../modal-win/modal-win.component';
 import { MarkerService } from './marker.service';
-import { TCreateMarkerBody } from './interfaces/marker.interface';
+import { TCreateMarkerBody, TPatchMarker } from './interfaces/marker.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +10,10 @@ import { TCreateMarkerBody } from './interfaces/marker.interface';
 export class CustomModalService {
   showInfo: boolean = false;
   addInfo: boolean = false;
+  updateInfo: boolean = false;
 
-  markerName: string | null;
-  rate: number | null;
+  markerName: string;
+  rate: number;
   indeterminateItems: string[];
 
   constructor(private _modalService: NzModalService, private markerService: MarkerService) { }
@@ -85,9 +86,8 @@ export class CustomModalService {
               complete: () => {
                 modal.destroy();
                 this.completeMessageModal();
-                console.log(sendData)
-                this.markerName = null
-                this.rate = null
+                this.markerName = ''
+                this.rate = 0
                 this.indeterminateItems = []
               },
             })
@@ -115,7 +115,7 @@ export class CustomModalService {
     })
   }
 
-  errorMessageModal(): void{
+  errorMessageModal(): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: "Ошибка!!!",
       nzContent: "Проверьте что вы заполнили все поля!!!",
@@ -132,16 +132,25 @@ export class CustomModalService {
     })
   }
 
-  getInfoMarkerModal(name: string, rate: number, nameAddress: string, barrierFreeElements: string[]): void {
+  getInfoMarkerModal(name: string, rate: number, nameAddress: string, barrierFreeElements: string[], _id: string): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: name,
       nzContent: ModalWinComponent,
       nzClosable: false,
       nzFooter: [
         {
-          label: 'Закрыть',
+          label: 'Изменить',
           shape: 'round',
           type: 'primary',
+          onClick: () => {
+            modal.destroy();
+            this.updateMarkerInfo(name, rate, barrierFreeElements, _id);
+          },
+        },
+        {
+          label: 'Закрыть',
+          shape: 'round',
+          type: 'dashed',
           onClick: () => {
             modal.destroy();
           },
@@ -152,5 +161,52 @@ export class CustomModalService {
     modal.componentInstance!.rate = rate;
     modal.componentInstance!.nameAddress = nameAddress;
     modal.componentInstance!.showInfo = true;
+  }
+
+  updateMarkerInfo(name: string, rate: number, barrierFreeElements: string[], _id: string) {
+    const modal: NzModalRef = this._modalService.create({
+      nzTitle:  name,
+      nzContent: ModalWinComponent,
+      nzClosable: false,
+      nzFooter: [
+        {
+          label: 'Обновить',
+          shape: 'round',
+          type: 'primary',
+          onClick: (modalWinComponent: ModalWinComponent) => {
+            modalWinComponent.passDataToService()
+            const sendData: TPatchMarker = {
+              _id: _id,
+              name: this.markerName,
+              rate: this.rate,
+              barrier_free_elements: this.indeterminateItems
+            };
+            this.markerService.patchMarkerById(_id, sendData).subscribe({
+              error: (error) => {
+                this.errorMessageModal();
+              },
+              complete: () => {
+                modal.destroy();
+                this.completeMessageModal();
+              },
+            })
+          },
+
+        },
+        {
+          label: 'Закрыть',
+          shape: 'round',
+          type: 'dashed',
+          onClick: () => {
+            modal.destroy();
+          },
+        },
+      ],
+    });
+    modal.componentInstance!.barrierFreeElements = barrierFreeElements;
+    modal.componentInstance!.rate = rate;
+    modal.componentInstance!.updateInfo = true;
+    modal.componentInstance!.name = name;
+
   }
 }

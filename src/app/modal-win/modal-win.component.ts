@@ -20,8 +20,10 @@ export class ModalWinComponent{
   @Input() rate: number;
   @Input() showInfo: boolean;
   @Input() addInfo: boolean;
+  @Input() updateInfo: boolean;
   @Input() nameAddress: string;
   @Input() barrierFreeElements: string[];
+  @Input() name: string;
 
   checked = true;
 
