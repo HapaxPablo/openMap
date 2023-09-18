@@ -207,6 +207,5 @@ export class CustomModalService {
     modal.componentInstance!.rate = rate;
     modal.componentInstance!.updateInfo = true;
     modal.componentInstance!.name = name;
-
   }
 }

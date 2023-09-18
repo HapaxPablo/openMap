@@ -34,6 +34,7 @@
     <p class="container_rating_label">Рейтинг</p>
     <nz-rate
       *ngIf="addInfo"
+      [nzAllowHalf]="true"
       [formControl]="markerForm.controls.rating"
     ></nz-rate>
   </div>
@@ -52,15 +53,16 @@
     <input
       [formControl]="markerForm.controls.markerName"
       nz-input
-      placeholder={{name}}
       nzSize="small"
       style="max-width: 180px"
+      [placeholder]="name"
     >
   </div>
   <div class="container_rating">
     <p class="container_rating_label">Рейтинг</p>
     <nz-rate
-      *ngIf="updateInfo"
+      [ngModel]="rate"
+      [nzAllowHalf]="true"
       [formControl]="markerForm.controls.rating"
     ></nz-rate>
   </div>
