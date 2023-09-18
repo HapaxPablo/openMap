@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ModalWinModule } from './modal-win/modal-win.module';
 import { NzRateModule } from 'ng-zorro-antd/rate';
 import { FormsModule } from '@angular/forms';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -18,7 +19,8 @@ import { FormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     ModalWinModule,
     NzRateModule,
-    FormsModule
+    FormsModule,
+    NzSpinModule
   ],
   bootstrap: [AppComponent],
   providers: [],

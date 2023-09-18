@@ -4,4 +4,10 @@
   [leafletOptions]="leafletOptions"
   (leafletClick)="onClickMap($event)"
   (leafletMapReady)="onMapReady($event)"
-></div>
+>
+</div>
+
+
+<div class="spinner-overlay" >
+  <nz-spin nzSimple [nzSize]="'large'" [nzSpinning]="isLoadingMapInit"></nz-spin>
+</div>

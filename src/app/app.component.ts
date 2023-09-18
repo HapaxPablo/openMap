@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { MarkerService } from './services/marker.service';
-import { TCreateMarkerBody } from './services/interfaces/marker.interface';
 import { take } from 'rxjs';
 
 @Component({
@@ -10,11 +9,12 @@ import { take } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent{
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
   houseNumber: number;
   road: string;
   nameAddress: string;
+  isLoadingMapInit = true;
 
   constructor(
     private mapService: MapService,
@@ -24,7 +24,10 @@ export class AppComponent {
   onMapReady(map: L.Map) {
     this.markerService.getMarkers().subscribe((markers) => {
       this.mapService.initMap(map);
-      markers.forEach((marker) => {this.mapService.addMarker(marker)} );
+      markers.forEach((marker) => {
+        this.mapService.addMarker(marker);
+      });
+      this.isLoadingMapInit = false;
     });
   }
 
