@@ -22,7 +22,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(
 
 @NgModule({
   declarations: [ModalWinComponent],
-  imports: [BrowserModule, NzModalModule, FormsModule, BrowserAnimationsModule, NzRateModule, NzInputModule, NzCheckboxModule, ReactiveFormsModule, NzFormModule],
+  imports: [NzModalModule, FormsModule, BrowserAnimationsModule, NzRateModule, NzInputModule, NzCheckboxModule, ReactiveFormsModule, NzFormModule],
   providers: [
     { provide: NZ_I18N, useValue: ru_RU },
     { provide: NZ_ICONS, useValue: icons },

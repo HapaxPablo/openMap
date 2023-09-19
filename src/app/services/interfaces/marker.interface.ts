@@ -31,7 +31,7 @@ export type TCreateMarkerBodyDTO = {
         long: number;
         name_address: string;
     };
-    barrier_free_elements: string[] | null
+    barrier_free_elements: string[]
 }
 
 export type TCreateMarkerBody = {
@@ -43,7 +43,7 @@ export type TCreateMarkerBody = {
         long: number;
         name_address: string;
     };
-    barrier_free_elements: string[] | null
+    barrier_free_elements: string[]
 }
 
 export const createMarkerBody = (
@@ -95,5 +95,4 @@ export type TMarkerForm = {
     markerName: string;
     rating: number | null;
     barrierFree: { label: string; value: string; checked: boolean }[];
-    
-  };
+};

@@ -12,7 +12,7 @@ export type TMappedFormControls<ValueType> = FormGroup<{
   templateUrl: './modal-win.component.html',
   styleUrls: ['./modal-win.component.scss'],
 })
-export class ModalWinComponent {
+export class ModalWinComponent implements OnInit{
 
   @Input() rate: number;
   @Input() showInfo: boolean;
@@ -20,31 +20,49 @@ export class ModalWinComponent {
   @Input() updateInfo: boolean;
   @Input() nameAddress: string;
   @Input() barrierFreeElements: string[];
-  @Input() name: string;
+  @Input() name: string = '';
 
   checked = true;
 
-  markerForm: TMappedFormControls<TMarkerForm> = this.fb.group(
-    {
-      markerName: this.fb.nonNullable.control('', Validators.required),
-      rating: [null as number | null, Validators.required],
-      barrierFree: this.fb.nonNullable.control(
-        [
-          { label: 'Что-то 1', value: 'Что-то 1', checked: false },
-          { label: 'Что-то 2', value: 'Что-то 2', checked: false },
-          { label: 'Что-то 3', value: 'Что-то 3', checked: false }
-        ], Validators.required),
-    },
-  );
+  markerForm: TMappedFormControls<TMarkerForm>;
 
-  
+  ngOnInit() {
+    this.markerForm = this.fb.group(
+      {
+        markerName: this.fb.nonNullable.control(this.name, Validators.required),
+        rating: [null as number | null, Validators.required],
+        barrierFree: this.fb.nonNullable.control(
+          [
+            { label: 'Что-то 1', value: 'Chto-to 1', checked: false },
+            { label: 'Что-то 2', value: 'Chto-to 2', checked: false },
+            { label: 'Что-то 3', value: 'Chto-to 3', checked: false }
+          ], Validators.required),
+      },
+    );
+    this.setCheckboxStateFromBackendData();
+  }
 
   constructor(private modalService: CustomModalService, private fb: FormBuilder) { }
-
+ 
   passDataToService(): void {
     const markerName = this.markerForm.controls.markerName.value;
     const rating = this.markerForm.controls.rating.value;
-    const barrierFree = this.markerForm.controls.barrierFree?.value.filter(item => item.checked).map((item) => item.value);
+    const barrierFree = this.markerForm.controls.barrierFree?.value.filter(item => item.checked).map((items) => items.label);
     this.modalService.saveInfoMarker(markerName, rating!, barrierFree);
+  }
+
+  private setCheckboxStateFromBackendData() {
+    if (this.barrierFreeElements && this.barrierFreeElements.length > 0) {
+      const barrierFreeArray = this.markerForm.controls.barrierFree as FormControl<{ label: string; value: string; checked: boolean }[]>;
+
+      this.barrierFreeElements.forEach((item) => {
+        const checkbox = barrierFreeArray.value.find((checkboxItem) => checkboxItem.label === item);
+        if (checkbox) {
+          checkbox.checked = true;
+        }
+      });
+
+      barrierFreeArray.setValue(barrierFreeArray.value);
+    }
   }
 }
