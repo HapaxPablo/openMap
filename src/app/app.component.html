@@ -1,13 +1,2 @@
-<div
-  class="leaflet-map-container"
-  leaflet
-  [leafletOptions]="leafletOptions"
-  (leafletClick)="onClickMap($event)"
-  (leafletMapReady)="onMapReady($event)"
->
-</div>
 
-
-<div class="spinner-overlay" >
-  <nz-spin nzSimple [nzSize]="'large'" [nzSpinning]="isLoadingMapInit"></nz-spin>
-</div>
+<router-outlet></router-outlet>

@@ -1,28 +1,27 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { LeafletDrawModule } from '@asymmetrik/ngx-leaflet-draw';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ModalWinModule } from './modal-win/modal-win.module';
-import { NzRateModule } from 'ng-zorro-antd/rate';
-import { FormsModule } from '@angular/forms';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { AboutPageModule } from './about-page/about-page.module';
+import { AppRoutingModule } from './app-routing.module';
+import { LeafletMapModule } from './leaflet-map/leaflet-map.module';
+import { LeafletPageRoutingModule } from './leaflet-map/leaflet-rouring.module';
+import { CommonModule } from '@angular/common';
+import { AboutPageRoutingModule } from './about-page/about-rouring.module';
+import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule,
-    LeafletModule,
+    CommonModule,
+    AboutPageModule,
+    AppRoutingModule,
+    LeafletMapModule,
+    LeafletPageRoutingModule,
+    AboutPageRoutingModule,    
     HttpClientModule,
-    LeafletDrawModule,
-    BrowserAnimationsModule,
-    ModalWinModule,
-    NzRateModule,
-    FormsModule,
-    NzSpinModule
   ],
   bootstrap: [AppComponent],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
