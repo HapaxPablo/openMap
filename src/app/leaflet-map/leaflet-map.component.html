@@ -1,0 +1,23 @@
+<div class="header">
+  <div class="btn">
+    <button nz-button nzType="primary" nzValue="default" nzShape="round" [nzLoading]="isLoadingMapInit" [nzSize]="size"  [routerLink]="['../','about']">
+      <span class="btn_text">About</span>
+    </button>
+  </div>
+</div>
+
+<div
+  class="leaflet-map-container"
+  leaflet
+  [leafletOptions]="leafletOptions"
+  (leafletClick)="onClickMap($event)"
+  (leafletMapReady)="onMapReady($event)"
+></div>
+
+<div class="spinner-overlay">
+  <nz-spin
+    nzSimple
+    [nzSize]="'large'"
+    [nzSpinning]="isLoadingMapInit"
+  ></nz-spin>
+</div>
