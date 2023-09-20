@@ -132,6 +132,49 @@ export class CustomModalService {
     })
   }
 
+  successAuthMessageModal(): void {
+    const modal: NzModalRef = this._modalService.create({
+      nzTitle: "Успешно",
+      nzContent: "Вы успешно вошли в аккаунт",
+      nzFooter: [
+        {
+          label: 'Закрыть',
+          shape: 'round',
+          type: 'primary',
+          onClick: () => {
+            modal.destroy();
+          }
+        }
+      ]
+    })
+  }
+
+  errorAuthMessageModal(): void {
+    const modal: NzModalRef = this._modalService.create({
+      nzTitle: "Ошибка!!!",
+      nzContent: "Войдите в аккаунт!!!",
+      nzFooter: [
+        {
+          label: 'Закрыть',
+          shape: 'round',
+          type: 'dashed',
+          onClick: () => {
+            modal.destroy();
+          }
+        },
+        {
+          label: 'Войти',
+          shape: 'round',
+          type: 'primary',
+          onClick: () => {
+            this.authModal();
+            modal.destroy();
+          }
+        }
+      ]
+    })
+  }
+
   getInfoMarkerModal(name: string, rate: number, nameAddress: string, barrierFreeElements: string[], _id: string): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: name,
@@ -207,5 +250,22 @@ export class CustomModalService {
     modal.componentInstance!.rate = rate;
     modal.componentInstance!.updateInfo = true;
     modal.componentInstance!.name = name;
+  }
+
+  authModal() {
+    const modal: NzModalRef = this._modalService.create({
+      nzTitle: 'Авторизация',
+      nzContent: ModalWinComponent,
+      nzFooter: [
+        {
+          label: 'Отмена',
+          shape: 'round',
+          type: 'primary',
+          onClick: () => {
+            modal.destroy();
+          }
+        }
+      ]
+    })
   }
 }

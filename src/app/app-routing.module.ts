@@ -4,7 +4,6 @@ import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
 const routes: Routes = [
   { path: 'home', component: LeafletMapComponent },
   { path: 'about', loadChildren: () => import('./about-page/about-page.module').then(m => m.AboutPageModule) },
-  
   { path: '', redirectTo: 'home', pathMatch: 'full' },
 ];
 

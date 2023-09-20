@@ -14,7 +14,13 @@
   <div class="container-info_barrier">
     <p class="container-info_barrier_label">Безбарьерная среда</p>
     <div *ngFor="let item of barrierFreeElements">
-      <label nz-checkbox [(ngModel)]="checked" style="pointer-events: none" class="container-info_barrier_label">{{ item }}</label>
+      <label
+        nz-checkbox
+        [(ngModel)]="checked"
+        style="pointer-events: none"
+        class="container-info_barrier_label"
+        >{{ item }}</label
+      >
     </div>
   </div>
 </div>
@@ -56,7 +62,7 @@
       nzSize="small"
       style="max-width: 180px"
       [placeholder]="name"
-    >
+    />
   </div>
   <div class="container_rating">
     <p class="container_rating_label">Рейтинг</p>
@@ -74,3 +80,42 @@
     ></nz-checkbox-group>
   </div>
 </div>
+
+<form
+  nz-form
+  [nzLayout]="'inline'"
+  [formGroup]="validateForm"
+  (ngSubmit)="submitForm()"
+>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Введите логин!">
+      <nz-input-group nzPrefixIcon="user">
+        <input
+          [formControl]="validateForm.controls.userName"
+          nz-input
+          type="email"
+          placeholder="example@example.ru"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control nzErrorTip="Введите пароль!">
+      <nz-input-group nzPrefixIcon="lock">
+        <input
+          [formControl]="validateForm.controls.password"
+          nz-input
+          type="password"
+          placeholder="пароль"
+        />
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-control>
+      <button nz-button nzType="primary" [disabled]="!validateForm.valid">
+        Войти
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>

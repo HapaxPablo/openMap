@@ -17,9 +17,19 @@
   justify-content: center;
   display: flex;
   align-items: center;
-
   .btn {
+    display: flex;
+    gap: 32px;
     &_text {
+      color: var(--Primary, #ffffff);
+      font-family: "Manrope", sans-serif;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 24px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
   }
 }

@@ -1,7 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { CustomModalService } from '../services/custom-modal.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { TMarkerForm } from '../services/interfaces/marker.interface';
+import { TAuth, TMarkerForm } from '../services/interfaces/marker.interface';
+import { NzModalRef } from 'ng-zorro-antd/modal';
+import { AuthService } from '../services/auth.service';
 
 export type TMappedFormControls<ValueType> = FormGroup<{
   [Property in keyof ValueType]: FormControl<ValueType[Property]>;
@@ -25,6 +27,7 @@ export class ModalWinComponent implements OnInit{
   checked = true;
 
   markerForm: TMappedFormControls<TMarkerForm>;
+  validateForm: TMappedFormControls<TAuth>;
 
   ngOnInit() {
     this.markerForm = this.fb.group(
@@ -39,11 +42,29 @@ export class ModalWinComponent implements OnInit{
           ], Validators.required),
       },
     );
+    this.validateForm = this.fb.group(
+      {
+        userName: this.fb.nonNullable.control('', [Validators.required, Validators.email]),
+        password: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(6)]),
+      }
+    )
     this.setCheckboxStateFromBackendData();
   }
 
-  constructor(private modalService: CustomModalService, private fb: FormBuilder) { }
- 
+
+  constructor(private modalService: CustomModalService, private fb: FormBuilder, private modal: NzModalRef, private authService: AuthService) { }
+
+  submitForm(): void {
+    const email = this.validateForm.controls.userName.value;
+    const password = this.validateForm.controls.password.value;
+    if (this.authService.login(email, password)) {
+      this.modalService.successAuthMessageModal();
+    } else {
+      this.modalService.errorAuthMessageModal();
+    }
+    this.modal.close();
+  }
+
   passDataToService(): void {
     const markerName = this.markerForm.controls.markerName.value;
     const rating = this.markerForm.controls.rating.value;

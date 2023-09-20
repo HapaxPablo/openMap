@@ -3,6 +3,7 @@ import { NzButtonSize } from 'ng-zorro-antd/button';
 import { take } from 'rxjs';
 import { MapService } from '../services/map.service';
 import { MarkerService } from '../services/marker.service';
+import { CustomModalService } from '../services/custom-modal.service';
 
 @Component({
   selector: 'app-leaflet-map',
@@ -20,6 +21,7 @@ export class LeafletMapComponent{
   constructor(
     private mapService: MapService,
     private markerService: MarkerService,
+    private modalService: CustomModalService
   ) {}
 
   onMapReady(map: L.Map) {
@@ -48,5 +50,9 @@ export class LeafletMapComponent{
     this.mapService.road$.pipe(take(1)).subscribe((road) => {
       this.road = road;
     });
+  }
+
+  openAuthModal(): void {
+    this.modalService.authModal();
   }
 }

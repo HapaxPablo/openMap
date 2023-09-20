@@ -1,7 +1,30 @@
 <div class="header">
   <div class="btn">
-    <button nz-button nzType="primary" nzValue="default" nzShape="round" [nzLoading]="isLoadingMapInit" [nzSize]="size"  [routerLink]="['../','about']">
-      <span class="btn_text">About</span>
+    <button
+      nz-button
+      nzType="primary"
+      nzValue="default"
+      nzShape="round"
+      [nzLoading]="isLoadingMapInit"
+      [nzSize]="size"
+      [routerLink]="['../', 'about']"
+    >
+      <span class="btn_text" nz-icon nzType="contacts" nzTheme="twotone"
+        >About</span
+      >
+    </button>
+    <button
+      nz-button
+      nzType="primary"
+      nzValue="default"
+      nzShape="round"
+      [nzLoading]="isLoadingMapInit"
+      [nzSize]="size"
+      (click)="openAuthModal()"
+    >
+      <span class="btn_text" nz-icon nzType="bulb" nzTheme="twotone"
+        >Log in</span
+      >
     </button>
   </div>
 </div>

@@ -96,3 +96,8 @@ export type TMarkerForm = {
     rating: number | null;
     barrierFree: { label: string; value: string; checked: boolean }[];
 };
+
+export type TAuth = {
+    userName: string;
+    password: string;
+}
