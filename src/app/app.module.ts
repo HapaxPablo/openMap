@@ -9,6 +9,7 @@ import { LeafletPageRoutingModule } from './leaflet-map/leaflet-rouring.module';
 import { CommonModule } from '@angular/common';
 import { AboutPageRoutingModule } from './about-page/about-rouring.module';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthModalModule } from './auth-modal/auth-modal.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -20,6 +21,7 @@ import { HttpClientModule } from '@angular/common/http';
     LeafletPageRoutingModule,
     AboutPageRoutingModule,    
     HttpClientModule,
+    AuthModalModule
   ],
   bootstrap: [AppComponent],
   providers: [],

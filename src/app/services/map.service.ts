@@ -5,12 +5,19 @@ import { ReplaySubject } from 'rxjs';
 import {  TMarker } from './interfaces/marker.interface';
 import { CustomModalService } from './custom-modal.service';
 
+type TMarkerList = {
+  mapMarker: L.Marker;
+  businessMarker: TMarker;
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class MapService {
   private _map: L.Map;
   private _markerLayer: L.FeatureGroup;
+  private _markerList: TMarkerList[] = [];
+  private _cursor: L.Marker | null = null;
   house_number: number;
   road: string;
   private nameAddress: string;
@@ -42,6 +49,15 @@ export class MapService {
     };
   }
 
+  private setCursorCoord(latLng: L.LatLng): void {
+    if (!this._cursor) {
+      this._cursor = L.marker(latLng);
+      this._cursor.addTo(this._map);
+    }
+    this._cursor.setLatLng(latLng);
+    this._map.setView(latLng, this._map.getMaxZoom());
+  }
+
   public initMap(mapObj: L.Map): void {
     this._map = mapObj;
     this._markerLayer = L.featureGroup();
@@ -54,6 +70,11 @@ export class MapService {
     addMarker.addTo(this._markerLayer);
     addMarker.on('click', () => {
       this._zone.run(() => this.onMarkerClick(marker));
+    });
+
+    this._markerList.push({
+      mapMarker: addMarker,
+      businessMarker: marker,
     });
 
   };
@@ -82,6 +103,7 @@ export class MapService {
   }
 
   public onMapClick(event: L.LeafletMouseEvent): void {
+    this.setCursorCoord(event.latlng);
     if (this._map) {
       L.marker(event.latlng).addTo(this._map);
     } else {

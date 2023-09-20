@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NzButtonSize } from 'ng-zorro-antd/button';
-import { take } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { MapService } from '../services/map.service';
 import { MarkerService } from '../services/marker.service';
 import { CustomModalService } from '../services/custom-modal.service';
@@ -10,7 +10,9 @@ import { CustomModalService } from '../services/custom-modal.service';
   templateUrl: './leaflet-map.component.html',
   styleUrls: ['./leaflet-map.component.scss']
 })
-export class LeafletMapComponent{
+export class LeafletMapComponent implements OnDestroy{
+
+  subscription: Subscription;
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
   houseNumber: number;
   road: string;
@@ -54,5 +56,9 @@ export class LeafletMapComponent{
 
   openAuthModal(): void {
     this.modalService.authModal();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 }

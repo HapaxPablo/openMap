@@ -1,16 +1,21 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ModalWinComponent } from '../modal-win/modal-win.component';
 import { MarkerService } from './marker.service';
 import { TCreateMarkerBody, TPatchMarker } from './interfaces/marker.interface';
+import { AuthModalComponent } from '../auth-modal/auth-modal.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomModalService {
+
+  @Output() cancelCreation: EventEmitter<void> = new EventEmitter<void>();
+
   showInfo: boolean = false;
   addInfo: boolean = false;
   updateInfo: boolean = false;
+  logInModal: boolean = false;
 
   markerName: string;
   rate: number;
@@ -24,6 +29,10 @@ export class CustomModalService {
     this.indeterminateItems = indeterminateItems;
   }
 
+  onCancelCreation(): void {
+    this.cancelCreation.emit();
+  }
+
   MarkerModal(nameAddress: string, lat: number, lng: number): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: nameAddress,
@@ -34,6 +43,7 @@ export class CustomModalService {
           shape: 'round',
           onClick: () => {
             modal.destroy();
+            this.onCancelCreation();
             nameAddress = '';
           },
         },
@@ -255,7 +265,7 @@ export class CustomModalService {
   authModal() {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: 'Авторизация',
-      nzContent: ModalWinComponent,
+      nzContent: AuthModalComponent,
       nzFooter: [
         {
           label: 'Отмена',
