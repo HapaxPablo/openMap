@@ -4,7 +4,10 @@ import { ModalWinComponent } from '../modal-win/modal-win.component';
 import { MarkerService } from './marker.service';
 import { TCreateMarkerBody, TPatchMarker } from './interfaces/marker.interface';
 import { AuthModalComponent } from '../auth-modal/auth-modal.component';
+import { MapService } from './map.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Injectable({
   providedIn: 'root'
 })
@@ -89,7 +92,7 @@ export class CustomModalService {
               rate: this.rate,
               barrier_free_elements: this.indeterminateItems
             };
-            this.markerService.createMarker(sendData).subscribe({
+            this.markerService.createMarker(sendData).pipe(untilDestroyed(this)).subscribe({
               error: (error) => {
                 this.errorMessageModal();
               },

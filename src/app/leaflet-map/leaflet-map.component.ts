@@ -1,18 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NzButtonSize } from 'ng-zorro-antd/button';
-import { Subscription, take } from 'rxjs';
+import { finalize, take } from 'rxjs';
 import { MapService } from '../services/map.service';
 import { MarkerService } from '../services/marker.service';
 import { CustomModalService } from '../services/custom-modal.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-leaflet-map',
   templateUrl: './leaflet-map.component.html',
   styleUrls: ['./leaflet-map.component.scss']
 })
-export class LeafletMapComponent implements OnDestroy{
+export class LeafletMapComponent {
 
-  subscription: Subscription;
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
   houseNumber: number;
   road: string;
@@ -27,12 +28,14 @@ export class LeafletMapComponent implements OnDestroy{
   ) {}
 
   onMapReady(map: L.Map) {
-    this.markerService.getMarkers().subscribe((markers) => {
+    this.markerService.getMarkers().pipe(finalize(() => {
+      this.isLoadingMapInit = false;
+      untilDestroyed(this);
+    })).subscribe((markers) => {
       this.mapService.initMap(map);
       markers.forEach((marker) => {
         this.mapService.addMarker(marker);
       });
-      this.isLoadingMapInit = false;
     });
   }
 
@@ -56,9 +59,5 @@ export class LeafletMapComponent implements OnDestroy{
 
   openAuthModal(): void {
     this.modalService.authModal();
-  }
-
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
   }
 }

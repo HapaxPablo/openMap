@@ -4,12 +4,14 @@ import * as L from 'leaflet';
 import { ReplaySubject } from 'rxjs';
 import {  TMarker } from './interfaces/marker.interface';
 import { CustomModalService } from './custom-modal.service';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 type TMarkerList = {
   mapMarker: L.Marker;
   businessMarker: TMarker;
 };
 
+@UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
@@ -84,7 +86,7 @@ export class MapService {
     const lng = event.latlng.lng;
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&addressdetails=1&polygon_geojson=1&format=geojson`;
 
-    this._http.get(apiUrl).subscribe((data: any) => {
+    this._http.get(apiUrl).pipe(untilDestroyed(this)).subscribe((data: any) => {
       const buildingGeometry = data.features[0].geometry;
       if (buildingGeometry.type === 'Polygon') {
         const buildingVertices = buildingGeometry.coordinates[0];
@@ -102,6 +104,10 @@ export class MapService {
     });
   }
 
+  public clearLayer(){
+    this._markerLayer.clearLayers();
+  }
+
   public onMapClick(event: L.LeafletMouseEvent): void {
     this.setCursorCoord(event.latlng);
     if (this._map) {
@@ -116,7 +122,7 @@ export class MapService {
   }
 
   private highlightBuilding(vertices: number[][]): void {
-    if (this._map) {
+    if (this._markerLayer) {
       const latLngs: L.LatLngExpression[] = vertices.map((vertice) => {
         return L.latLng(vertice[1], vertice[0]);
       });
