@@ -1,13 +1,13 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
-import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { MarkerService } from '../api/services/marker.service';
+import {EventEmitter, Injectable, Output} from '@angular/core';
+import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {MarkerService} from '../api/services/marker.service';
 import {
   TCreateMarkerBody,
   TPatchMarker,
 } from '../api/interfaces/marker.interface';
-import { AuthModalComponent } from '../page/auth-modal/auth-modal.component';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { ModalWinComponent } from '../page/modal-win/modal-win.component';
+import {AuthModalComponent} from '../page/auth-modal/auth-modal.component';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {ModalWinComponent} from '../page/modal-win/modal-win.component';
 
 @UntilDestroy()
 @Injectable({
@@ -28,7 +28,8 @@ export class CustomModalService {
   constructor(
     private _modalService: NzModalService,
     private markerService: MarkerService,
-  ) {}
+  ) {
+  }
 
   saveInfoMarker(
     markerName: string,

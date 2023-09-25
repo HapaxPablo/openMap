@@ -6,12 +6,9 @@
       nzValue="default"
       nzShape="round"
       [nzLoading]="isLoadingMapInit"
-      [nzSize]="size"
-      [routerLink]="['../', 'about']"
-    >
-      <span class="btn_text" nz-icon nzType="contacts" nzTheme="twotone"
-      >About</span
-      >
+      [nzSize]="'large'"
+      [routerLink]="['../', 'about']">
+      <span class="btn_text" nz-icon nzType="contacts" nzTheme="twotone">About</span>
     </button>
     <button
       nz-button
@@ -19,12 +16,9 @@
       nzValue="default"
       nzShape="round"
       [nzLoading]="isLoadingMapInit"
-      [nzSize]="size"
-      (click)="openAuthModal()"
-    >
-      <span class="btn_text" nz-icon nzType="bulb" nzTheme="twotone"
-      >Log in</span
-      >
+      [nzSize]="'large'"
+      (click)="openAuthModal()">
+      <span class="btn_text" nz-icon nzType="bulb" nzTheme="twotone">Log in</span>
     </button>
   </div>
 </div>
@@ -34,13 +28,11 @@
   leaflet
   [leafletOptions]="leafletOptions"
   (leafletMapReady)="onMapReady($event)"
-  (leafletClick)="onClickMap($event)"
-></div>
+  (leafletClick)="onClickMap($event)"></div>
 
 <div class="spinner-overlay">
   <nz-spin
     nzSimple
     [nzSize]="'large'"
-    [nzSpinning]="isLoadingMapInit"
-  ></nz-spin>
+    [nzSpinning]="isLoadingMapInit"></nz-spin>
 </div>

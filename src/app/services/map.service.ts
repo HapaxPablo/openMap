@@ -1,10 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable, NgZone } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Injectable, NgZone} from '@angular/core';
 import * as L from 'leaflet';
-import { ReplaySubject } from 'rxjs';
-import { TMarker } from '../api/interfaces/marker.interface';
-import { CustomModalService } from './custom-modal.service';
-import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import {TMarker} from '../api/interfaces/marker.interface';
+import {CustomModalService} from './custom-modal.service';
+import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
 type TMarkerList = {
   mapMarker: L.Marker;
@@ -25,20 +24,12 @@ export class MapService {
   private nameAddress: string;
   isLoadingMapInit = true;
 
-  private houseNumberSubject = new ReplaySubject<number>(1);
-  houseNumber$ = this.houseNumberSubject.asObservable();
-
-  private roadSubject = new ReplaySubject<string>(1);
-  road$ = this.roadSubject.asObservable();
-
-  private nameAddressSubject = new ReplaySubject<string>(1);
-  nameAddress$ = this.nameAddressSubject.asObservable();
-
   constructor(
     private _http: HttpClient,
     private _zone: NgZone,
     private customModal: CustomModalService,
-  ) {}
+  ) {
+  }
 
   public mapOpt(): L.MapOptions {
     return {
@@ -105,8 +96,6 @@ export class MapService {
           this.house_number = address.house_number;
           this.road = address.road;
           this.nameAddress = `${this.road}, д. ${this.house_number}`;
-          this.houseNumberSubject.next(this.house_number);
-          this.roadSubject.next(this.road);
           this.customModal.MarkerModal(this.nameAddress, lat, lng);
         }
       });

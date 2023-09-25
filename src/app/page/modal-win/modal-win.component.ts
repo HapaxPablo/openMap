@@ -1,12 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
+  NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { TMarkerForm } from 'src/app/api/interfaces/marker.interface';
-import { CustomModalService } from 'src/app/services/custom-modal.service';
+import {TMarkerForm} from 'src/app/api/interfaces/marker.interface';
+import {CustomModalService} from 'src/app/services/custom-modal.service';
 
 export type TMappedFormControls<ValueType> = FormGroup<{
   [Property in keyof ValueType]: FormControl<ValueType[Property]>;
@@ -32,13 +32,13 @@ export class ModalWinComponent implements OnInit {
 
   ngOnInit() {
     this.markerForm = this.fb.group({
-      markerName: this.fb.nonNullable.control(this.name, Validators.required),
+      markerName: this.fb.control(this.name, Validators.required),
       rating: [null as number | null, Validators.required],
-      barrierFree: this.fb.nonNullable.control(
+      barrierFree: this.fb.control(
         [
-          { label: 'Что-то 1', value: 'Chto-to 1', checked: false },
-          { label: 'Что-то 2', value: 'Chto-to 2', checked: false },
-          { label: 'Что-то 3', value: 'Chto-to 3', checked: false },
+          {label: 'Что-то 1', value: 'Chto-to 1', checked: false},
+          {label: 'Что-то 2', value: 'Chto-to 2', checked: false},
+          {label: 'Что-то 3', value: 'Chto-to 3', checked: false},
         ],
         Validators.required,
       ),
@@ -48,8 +48,9 @@ export class ModalWinComponent implements OnInit {
 
   constructor(
     private modalService: CustomModalService,
-    private fb: FormBuilder,
-  ) {}
+    private fb: NonNullableFormBuilder,
+  ) {
+  }
 
   passDataToService(): void {
     const markerName = this.markerForm.controls.markerName.value;

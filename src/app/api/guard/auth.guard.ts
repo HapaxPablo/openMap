@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
-import { Observable } from 'rxjs';
-import { take, map } from 'rxjs/operators';
-import { AuthService } from '../../services/auth.service';
-import { CustomModalService } from '../../services/custom-modal.service';
+import {Injectable} from '@angular/core';
+import {CanActivate, Router, UrlTree} from '@angular/router';
+import {Observable} from 'rxjs';
+import {take, map} from 'rxjs/operators';
+import {AuthService} from '../../services/auth.service';
+import {CustomModalService} from '../../services/custom-modal.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +13,8 @@ export class AuthGuard implements CanActivate {
     private authService: AuthService,
     private router: Router,
     private modalService: CustomModalService,
-  ) {}
+  ) {
+  }
 
   canActivate():
     | Observable<boolean | UrlTree>

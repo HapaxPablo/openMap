@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {Component} from '@angular/core';
 import {
-  FormBuilder,
   FormControl,
   FormGroup,
+  NonNullableFormBuilder,
   Validators,
 } from '@angular/forms';
-import { TAuth } from '../../api/interfaces/marker.interface';
-import { CustomModalService } from '../../services/custom-modal.service';
-import { NzModalRef } from 'ng-zorro-antd/modal';
-import { AuthService } from '../../services/auth.service';
+import {TAuth} from '../../api/interfaces/marker.interface';
+import {CustomModalService} from '../../services/custom-modal.service';
+import {NzModalRef} from 'ng-zorro-antd/modal';
+import {AuthService} from '../../services/auth.service';
 
 export type TMappedFormControls<ValueType> = FormGroup<{
   [Property in keyof ValueType]: FormControl<ValueType[Property]>;
@@ -19,22 +19,18 @@ export type TMappedFormControls<ValueType> = FormGroup<{
   templateUrl: './auth-modal.component.html',
   styleUrls: ['./auth-modal.component.scss'],
 })
-export class AuthModalComponent implements OnInit {
+export class AuthModalComponent {
   constructor(
-    private fb: FormBuilder,
+    private fb: NonNullableFormBuilder,
     private modalService: CustomModalService,
     private modal: NzModalRef,
     private authService: AuthService,
-  ) {}
-
-  ngOnInit() {}
+  ) {
+  }
 
   validateForm: TMappedFormControls<TAuth> = this.fb.group({
-    userName: this.fb.nonNullable.control('', [
-      Validators.required,
-      Validators.email,
-    ]),
-    password: this.fb.nonNullable.control('', [
+    userName: this.fb.control('', [Validators.required, Validators.email]),
+    password: this.fb.control('', [
       Validators.required,
       Validators.minLength(6),
     ]),

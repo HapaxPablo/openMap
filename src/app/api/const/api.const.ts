@@ -1,4 +1,6 @@
-const devHost = 'http://localhost:3000/api';
+import {environment} from 'src/environments/environment';
 
-export const MARKERS = `${devHost}/marker`;
-export const MARKER = (id: string) => `${devHost}/marker/${id}/`;
+const apiUrl = environment.apiUrl;
+
+export const MARKERS = `${apiUrl}/marker`;
+export const MARKER = (id: string) => `${apiUrl}/marker/${id}/`;

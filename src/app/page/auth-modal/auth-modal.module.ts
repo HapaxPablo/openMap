@@ -1,12 +1,12 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AuthModalComponent } from './auth-modal.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzInputModule } from 'ng-zorro-antd/input';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AuthModalComponent} from './auth-modal.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {NzFormModule} from 'ng-zorro-antd/form';
+import {NzButtonModule} from 'ng-zorro-antd/button';
+import {NzIconModule} from 'ng-zorro-antd/icon';
+import {NzModalModule} from 'ng-zorro-antd/modal';
+import {NzInputModule} from 'ng-zorro-antd/input';
 
 @NgModule({
   imports: [
@@ -22,4 +22,5 @@ import { NzInputModule } from 'ng-zorro-antd/input';
   declarations: [AuthModalComponent],
   exports: [AuthModalComponent],
 })
-export class AuthModalModule {}
+export class AuthModalModule {
+}
