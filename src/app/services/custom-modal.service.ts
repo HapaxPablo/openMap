@@ -1,18 +1,19 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-import { ModalWinComponent } from '../modal-win/modal-win.component';
-import { MarkerService } from './marker.service';
-import { TCreateMarkerBody, TPatchMarker } from './interfaces/marker.interface';
-import { AuthModalComponent } from '../auth-modal/auth-modal.component';
-import { MapService } from './map.service';
+import { MarkerService } from '../api/services/marker.service';
+import {
+  TCreateMarkerBody,
+  TPatchMarker,
+} from '../api/interfaces/marker.interface';
+import { AuthModalComponent } from '../page/auth-modal/auth-modal.component';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { ModalWinComponent } from '../page/modal-win/modal-win.component';
 
 @UntilDestroy()
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CustomModalService {
-
   @Output() cancelCreation: EventEmitter<void> = new EventEmitter<void>();
 
   showInfo: boolean = false;
@@ -24,9 +25,16 @@ export class CustomModalService {
   rate: number;
   indeterminateItems: string[];
 
-  constructor(private _modalService: NzModalService, private markerService: MarkerService) { }
+  constructor(
+    private _modalService: NzModalService,
+    private markerService: MarkerService,
+  ) {}
 
-  saveInfoMarker(markerName: string, rating: number, indeterminateItems: string[]) {
+  saveInfoMarker(
+    markerName: string,
+    rating: number,
+    indeterminateItems: string[],
+  ) {
     this.markerName = markerName;
     this.rate = rating;
     this.indeterminateItems = indeterminateItems;
@@ -56,7 +64,7 @@ export class CustomModalService {
           type: 'primary',
           onClick: () => {
             modal.destroy();
-            this.addInfoMarkerModal(nameAddress, lat, lng)
+            this.addInfoMarkerModal(nameAddress, lat, lng);
           },
         },
       ],
@@ -81,7 +89,7 @@ export class CustomModalService {
           type: 'primary',
           shape: 'round',
           onClick: (modalWinComponent: ModalWinComponent) => {
-            modalWinComponent.passDataToService()
+            modalWinComponent.passDataToService();
             const sendData: TCreateMarkerBody = {
               name: this.markerName,
               location: {
@@ -90,20 +98,23 @@ export class CustomModalService {
                 name_address: nameAddress,
               },
               rate: this.rate,
-              barrier_free_elements: this.indeterminateItems
+              barrier_free_elements: this.indeterminateItems,
             };
-            this.markerService.createMarker(sendData).pipe(untilDestroyed(this)).subscribe({
-              error: (error) => {
-                this.errorMessageModal();
-              },
-              complete: () => {
-                modal.destroy();
-                this.completeMessageModal();
-                this.markerName = ''
-                this.rate = 0
-                this.indeterminateItems = []
-              },
-            })
+            this.markerService
+              .createMarker(sendData)
+              .pipe(untilDestroyed(this))
+              .subscribe({
+                error: () => {
+                  this.errorMessageModal();
+                },
+                complete: () => {
+                  modal.destroy();
+                  this.completeMessageModal();
+                  this.markerName = '';
+                  this.rate = 0;
+                  this.indeterminateItems = [];
+                },
+              });
           },
         },
       ],
@@ -113,8 +124,8 @@ export class CustomModalService {
 
   completeMessageModal(): void {
     const modal: NzModalRef = this._modalService.create({
-      nzTitle: "Успешно",
-      nzContent: "Ваш маркер был успешно добавлен",
+      nzTitle: 'Успешно',
+      nzContent: 'Ваш маркер был успешно добавлен',
       nzFooter: [
         {
           label: 'Закрыть',
@@ -122,16 +133,16 @@ export class CustomModalService {
           type: 'primary',
           onClick: () => {
             modal.destroy();
-          }
-        }
-      ]
-    })
+          },
+        },
+      ],
+    });
   }
 
   errorMessageModal(): void {
     const modal: NzModalRef = this._modalService.create({
-      nzTitle: "Ошибка!!!",
-      nzContent: "Проверьте что вы заполнили все поля!!!",
+      nzTitle: 'Ошибка!!!',
+      nzContent: 'Проверьте что вы заполнили все поля!!!',
       nzFooter: [
         {
           label: 'Закрыть',
@@ -139,16 +150,16 @@ export class CustomModalService {
           type: 'primary',
           onClick: () => {
             modal.destroy();
-          }
-        }
-      ]
-    })
+          },
+        },
+      ],
+    });
   }
 
   successAuthMessageModal(): void {
     const modal: NzModalRef = this._modalService.create({
-      nzTitle: "Успешно",
-      nzContent: "Вы успешно вошли в аккаунт",
+      nzTitle: 'Успешно',
+      nzContent: 'Вы успешно вошли в аккаунт',
       nzFooter: [
         {
           label: 'Закрыть',
@@ -156,16 +167,16 @@ export class CustomModalService {
           type: 'primary',
           onClick: () => {
             modal.destroy();
-          }
-        }
-      ]
-    })
+          },
+        },
+      ],
+    });
   }
 
   errorAuthMessageModal(): void {
     const modal: NzModalRef = this._modalService.create({
-      nzTitle: "Ошибка!!!",
-      nzContent: "Войдите в аккаунт!!!",
+      nzTitle: 'Ошибка!!!',
+      nzContent: 'Войдите в аккаунт!!!',
       nzFooter: [
         {
           label: 'Закрыть',
@@ -173,7 +184,7 @@ export class CustomModalService {
           type: 'dashed',
           onClick: () => {
             modal.destroy();
-          }
+          },
         },
         {
           label: 'Войти',
@@ -182,13 +193,19 @@ export class CustomModalService {
           onClick: () => {
             this.authModal();
             modal.destroy();
-          }
-        }
-      ]
-    })
+          },
+        },
+      ],
+    });
   }
 
-  getInfoMarkerModal(name: string, rate: number, nameAddress: string, barrierFreeElements: string[], _id: string): void {
+  getInfoMarkerModal(
+    name: string,
+    rate: number,
+    nameAddress: string,
+    barrierFreeElements: string[],
+    _id: string,
+  ): void {
     const modal: NzModalRef = this._modalService.create({
       nzTitle: name,
       nzContent: ModalWinComponent,
@@ -219,9 +236,14 @@ export class CustomModalService {
     modal.componentInstance!.showInfo = true;
   }
 
-  updateMarkerInfo(name: string, rate: number, barrierFreeElements: string[], _id: string) {
+  updateMarkerInfo(
+    name: string,
+    rate: number,
+    barrierFreeElements: string[],
+    _id: string,
+  ) {
     const modal: NzModalRef = this._modalService.create({
-      nzTitle:  name,
+      nzTitle: name,
       nzContent: ModalWinComponent,
       nzClosable: false,
       nzFooter: [
@@ -230,24 +252,23 @@ export class CustomModalService {
           shape: 'round',
           type: 'primary',
           onClick: (modalWinComponent: ModalWinComponent) => {
-            modalWinComponent.passDataToService()
+            modalWinComponent.passDataToService();
             const sendData: TPatchMarker = {
               _id: _id,
               name: this.markerName,
               rate: this.rate,
-              barrier_free_elements: this.indeterminateItems
+              barrier_free_elements: this.indeterminateItems,
             };
             this.markerService.patchMarkerById(_id, sendData).subscribe({
-              error: (error) => {
+              error: () => {
                 this.errorMessageModal();
               },
               complete: () => {
                 modal.destroy();
                 this.completeMessageModal();
               },
-            })
+            });
           },
-
         },
         {
           label: 'Закрыть',
@@ -276,9 +297,9 @@ export class CustomModalService {
           type: 'primary',
           onClick: () => {
             modal.destroy();
-          }
-        }
-      ]
-    })
+          },
+        },
+      ],
+    });
   }
 }
