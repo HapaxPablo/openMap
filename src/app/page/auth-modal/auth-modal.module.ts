@@ -17,9 +17,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     NzIconModule,
     NzModalModule,
     ReactiveFormsModule,
-    NzInputModule
+    NzInputModule,
   ],
   declarations: [AuthModalComponent],
-  exports: [AuthModalComponent]
+  exports: [AuthModalComponent],
 })
-export class AuthModalModule { }
+export class AuthModalModule {}

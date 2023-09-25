@@ -17,9 +17,11 @@
   justify-content: center;
   display: flex;
   align-items: center;
+
   .btn {
     display: flex;
     gap: 32px;
+
     &_text {
       color: var(--Primary, #ffffff);
       font-family: "Manrope", sans-serif;

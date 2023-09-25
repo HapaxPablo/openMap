@@ -1,19 +1,18 @@
 import { Component } from '@angular/core';
 import { NzButtonSize } from 'ng-zorro-antd/button';
 import { finalize, take } from 'rxjs';
-import { MapService } from '../services/map.service';
-import { MarkerService } from '../services/marker.service';
-import { CustomModalService } from '../services/custom-modal.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { MapService } from 'src/app/services/map.service';
+import { MarkerService } from 'src/app/api/services/marker.service';
+import { CustomModalService } from 'src/app/services/custom-modal.service';
 
 @UntilDestroy()
 @Component({
   selector: 'app-leaflet-map',
   templateUrl: './leaflet-map.component.html',
-  styleUrls: ['./leaflet-map.component.scss']
+  styleUrls: ['./leaflet-map.component.scss'],
 })
 export class LeafletMapComponent {
-
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
   houseNumber: number;
   road: string;
@@ -24,19 +23,24 @@ export class LeafletMapComponent {
   constructor(
     private mapService: MapService,
     private markerService: MarkerService,
-    private modalService: CustomModalService
+    private modalService: CustomModalService,
   ) {}
 
   onMapReady(map: L.Map) {
-    this.markerService.getMarkers().pipe(finalize(() => {
-      this.isLoadingMapInit = false;
-      untilDestroyed(this);
-    })).subscribe((markers) => {
-      this.mapService.initMap(map);
-      markers.forEach((marker) => {
-        this.mapService.addMarker(marker);
+    this.markerService
+      .getMarkers()
+      .pipe(
+        finalize(() => {
+          this.isLoadingMapInit = false;
+          untilDestroyed(this);
+        }),
+      )
+      .subscribe((markers) => {
+        this.mapService.initMap(map);
+        markers.forEach((marker) => {
+          this.mapService.addMarker(marker);
+        });
       });
-    });
   }
 
   onClickMap(event: L.LeafletMouseEvent): void {
@@ -46,8 +50,6 @@ export class LeafletMapComponent {
   }
 
   subOnInfo(event: L.LeafletMouseEvent) {
-    const lat = event.latlng.lat;
-    const lng = event.latlng.lng;
     this.mapService.houseNumber$.pipe(take(1)).subscribe((houseNumber) => {
       this.houseNumber = houseNumber;
     });

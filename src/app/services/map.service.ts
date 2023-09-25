@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import * as L from 'leaflet';
 import { ReplaySubject } from 'rxjs';
-import {  TMarker } from './interfaces/marker.interface';
+import { TMarker } from '../api/interfaces/marker.interface';
 import { CustomModalService } from './custom-modal.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
@@ -34,7 +34,11 @@ export class MapService {
   private nameAddressSubject = new ReplaySubject<string>(1);
   nameAddress$ = this.nameAddressSubject.asObservable();
 
-  constructor(private _http: HttpClient, private _zone: NgZone, private customModal: CustomModalService) {}
+  constructor(
+    private _http: HttpClient,
+    private _zone: NgZone,
+    private customModal: CustomModalService,
+  ) {}
 
   public mapOpt(): L.MapOptions {
     return {
@@ -68,7 +72,9 @@ export class MapService {
   }
 
   public addMarker = (marker: TMarker): void => {
-    const addMarker = L.marker(L.latLng(marker.location.lat, marker.location.long));
+    const addMarker = L.marker(
+      L.latLng(marker.location.lat, marker.location.long),
+    );
     addMarker.addTo(this._markerLayer);
     addMarker.on('click', () => {
       this._zone.run(() => this.onMarkerClick(marker));
@@ -78,33 +84,35 @@ export class MapService {
       mapMarker: addMarker,
       businessMarker: marker,
     });
-
   };
 
-  getBuildingVertices(event: L.LeafletMouseEvent){
+  getBuildingVertices(event: L.LeafletMouseEvent) {
     const lat = event.latlng.lat;
     const lng = event.latlng.lng;
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&addressdetails=1&polygon_geojson=1&format=geojson`;
 
-    this._http.get(apiUrl).pipe(untilDestroyed(this)).subscribe((data: any) => {
-      const buildingGeometry = data.features[0].geometry;
-      if (buildingGeometry.type === 'Polygon') {
-        const buildingVertices = buildingGeometry.coordinates[0];
-        this.highlightBuilding(buildingVertices);
-      }
-      const address = data.features[0].properties.address;
-      if (address) {
-        this.house_number = address.house_number;
-        this.road = address.road;
-        this.nameAddress = `${this.road}, д. ${this.house_number}`;
-        this.houseNumberSubject.next(this.house_number);
-        this.roadSubject.next(this.road);
-        this.customModal.MarkerModal(this.nameAddress, lat, lng);
-      }
-    });
+    this._http
+      .get(apiUrl)
+      .pipe(untilDestroyed(this))
+      .subscribe((data: any) => {
+        const buildingGeometry = data.features[0].geometry;
+        if (buildingGeometry.type === 'Polygon') {
+          const buildingVertices = buildingGeometry.coordinates[0];
+          this.highlightBuilding(buildingVertices);
+        }
+        const address = data.features[0].properties.address;
+        if (address) {
+          this.house_number = address.house_number;
+          this.road = address.road;
+          this.nameAddress = `${this.road}, д. ${this.house_number}`;
+          this.houseNumberSubject.next(this.house_number);
+          this.roadSubject.next(this.road);
+          this.customModal.MarkerModal(this.nameAddress, lat, lng);
+        }
+      });
   }
 
-  public clearLayer(){
+  public clearLayer() {
     this._markerLayer.clearLayers();
   }
 
@@ -118,7 +126,13 @@ export class MapService {
   }
 
   public onMarkerClick(marker: TMarker): void {
-    this.customModal.getInfoMarkerModal(marker.name, marker.rate, marker.location.name_address, marker.barrier_free_elements, marker._id);
+    this.customModal.getInfoMarkerModal(
+      marker.name,
+      marker.rate,
+      marker.location.name_address,
+      marker.barrier_free_elements,
+      marker._id,
+    );
   }
 
   private highlightBuilding(vertices: number[][]): void {
