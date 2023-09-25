@@ -1,12 +1,14 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { AboutPageComponent } from './about-page.component';
 import { AboutPageRoutingModule } from './about-rouring.module';
-import { BrowserModule } from '@angular/platform-browser';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @NgModule({
   imports: [
-    AboutPageRoutingModule
+    AboutPageRoutingModule,
+    NzButtonModule,
+    NzIconModule
   ],
   declarations: [AboutPageComponent],
   exports: [AboutPageComponent]
