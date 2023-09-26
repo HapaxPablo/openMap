@@ -1,4 +1,7 @@
 .container {
+  &_btn {
+    margin-top: 25px;
+  }
   &_input {
     display: flex;
     flex-direction: column;
@@ -7,7 +10,7 @@
 
     &_label {
       color: var(--Text-color, #222);
-      font-family: 'Manrope', sans-serif;
+      font-family: "Manrope", sans-serif;
       font-size: 18px;
       font-style: normal;
       font-weight: 500;
@@ -24,7 +27,7 @@
 
     &_label {
       color: var(--Text-color, #222);
-      font-family: 'Manrope', sans-serif;
+      font-family: "Manrope", sans-serif;
       font-size: 18px;
       font-style: normal;
       font-weight: 500;
@@ -42,7 +45,7 @@
 
     &_label {
       color: var(--Text-color, #222);
-      font-family: 'Manrope', sans-serif;
+      font-family: "Manrope", sans-serif;
       font-size: 18px;
       font-style: normal;
       font-weight: 500;
@@ -59,7 +62,7 @@
 
     &_label {
       color: var(--Text-color, #222);
-      font-family: 'Manrope', sans-serif;
+      font-family: "Manrope", sans-serif;
       font-size: 18px;
       font-style: normal;
       font-weight: 500;
@@ -75,7 +78,7 @@
 
     &_label {
       color: var(--Text-color, #222);
-      font-family: 'Manrope', sans-serif;
+      font-family: "Manrope", sans-serif;
       font-size: 18px;
       font-style: normal;
       font-weight: 500;
@@ -91,7 +94,7 @@
 
     &_label {
       color: var(--Text-color, #222);
-      font-family: 'Manrope', sans-serif;
+      font-family: "Manrope", sans-serif;
       font-size: 18px;
       font-style: normal;
       font-weight: 500;
