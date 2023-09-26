@@ -4,6 +4,13 @@ import * as L from 'leaflet';
 import {TMarker} from '../api/interfaces/marker.interface';
 import {CustomModalService} from './custom-modal.service';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {
+  DEFAULT_MARKER_ICON_SIZE,
+  DEFAULT_ZOOM,
+  KRASNOYARSK_CENTER_COORD,
+  MAX_ZOOM,
+  MIN_ZOOM
+} from "./constants/map.constants";
 
 type TMarkerList = {
   mapMarker: L.Marker;
@@ -19,36 +26,49 @@ export class MapService {
   private _markerLayer: L.FeatureGroup;
   private _markerList: TMarkerList[] = [];
   private _cursor: L.Marker | null = null;
+  private _defaultIcon: L.Icon;
   house_number: number;
   road: string;
   private nameAddress: string;
   isLoadingMapInit = true;
+
 
   constructor(
     private _http: HttpClient,
     private _zone: NgZone,
     private customModal: CustomModalService,
   ) {
+    this._defaultIcon = L.icon({
+      iconUrl: '/assets/marker.svg',
+      iconAnchor: [
+        DEFAULT_MARKER_ICON_SIZE.width / 2,
+        DEFAULT_MARKER_ICON_SIZE.height,
+      ],
+      iconSize: [
+        DEFAULT_MARKER_ICON_SIZE.width,
+        DEFAULT_MARKER_ICON_SIZE.height,
+      ],
+    });
   }
 
   public mapOpt(): L.MapOptions {
     return {
       layers: [
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 18,
-          minZoom: 12,
+          maxZoom: MAX_ZOOM,
+          minZoom: MIN_ZOOM,
           attribution:
             '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }),
       ],
-      zoom: 12,
-      center: L.latLng(56.01488, 92.86846),
+      zoom: DEFAULT_ZOOM,
+      center: KRASNOYARSK_CENTER_COORD,
     };
   }
 
   private setCursorCoord(latLng: L.LatLng): void {
     if (!this._cursor) {
-      this._cursor = L.marker(latLng);
+      this._cursor = L.marker(latLng, {icon: this._defaultIcon});
       this._cursor.addTo(this._map);
     }
     this._cursor.setLatLng(latLng);
@@ -65,6 +85,9 @@ export class MapService {
   public addMarker = (marker: TMarker): void => {
     const addMarker = L.marker(
       L.latLng(marker.location.lat, marker.location.long),
+      {
+        icon: this._defaultIcon,
+      }
     );
     addMarker.addTo(this._markerLayer);
     addMarker.on('click', () => {
@@ -107,11 +130,6 @@ export class MapService {
 
   public onMapClick(event: L.LeafletMouseEvent): void {
     this.setCursorCoord(event.latlng);
-    if (this._map) {
-      L.marker(event.latlng).addTo(this._map);
-    } else {
-      console.error('Map is not initialized.');
-    }
   }
 
   public onMarkerClick(marker: TMarker): void {

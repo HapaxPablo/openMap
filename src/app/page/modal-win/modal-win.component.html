@@ -51,6 +51,11 @@
       [formControl]="markerForm.controls.barrierFree"
     ></nz-checkbox-group>
   </div>
+  <div>
+    <button nz-button nzType="primary" [disabled]="markerForm.invalid" (click)="saveMarker()">
+      Сохранить
+    </button>
+  </div>
 </div>
 
 <div *ngIf="updateInfo" class="container">

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {CanActivate, Router, UrlTree} from '@angular/router';
 import {Observable} from 'rxjs';
-import {take, map} from 'rxjs/operators';
+import {map, take} from 'rxjs/operators';
 import {AuthService} from '../../services/auth.service';
 import {CustomModalService} from '../../services/custom-modal.service';
 

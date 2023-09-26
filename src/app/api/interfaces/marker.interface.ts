@@ -23,8 +23,8 @@ export const markerTransformer = (DTO: TMarkerDTO): TMarker => {
 
 export type TCreateMarkerBodyDTO = {
   _id?: string;
-  name: string | null;
-  rate: number | null;
+  name: string;
+  rate: number;
   location: {
     lat: number;
     long: number;
@@ -35,8 +35,8 @@ export type TCreateMarkerBodyDTO = {
 
 export type TCreateMarkerBody = {
   _id?: string;
-  name: string | null;
-  rate: number | null;
+  name: string;
+  rate: number;
   location: {
     lat: number;
     long: number;
@@ -90,10 +90,31 @@ export const patchMarkerBody = (
   };
 };
 
+export const createMarkerForm = (body: TMarkerForm): TCreateMarkerBody => {
+  const selectedBarriers = body.barrierFree
+    .filter(item => item.checked)
+    .map(item => item.label);
+
+  return {
+    name: body.markerName,
+    rate: body.rating,
+    barrier_free_elements: selectedBarriers,
+    location: {
+      lat: body.lat,
+      long: body.long,
+      name_address: body.nameAddress
+    }
+  };
+}
+
+
 export type TMarkerForm = {
   markerName: string;
-  rating: number | null;
+  rating: number;
   barrierFree: { label: string; value: string; checked: boolean }[];
+  lat: number;
+  long: number;
+  nameAddress: string;
 };
 
 export type TAuth = {

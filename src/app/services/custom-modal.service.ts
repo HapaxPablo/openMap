@@ -1,12 +1,9 @@
 import {EventEmitter, Injectable, Output} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {MarkerService} from '../api/services/marker.service';
-import {
-  TCreateMarkerBody,
-  TPatchMarker,
-} from '../api/interfaces/marker.interface';
+import {TPatchMarker,} from '../api/interfaces/marker.interface';
 import {AuthModalComponent} from '../page/auth-modal/auth-modal.component';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
+import {UntilDestroy} from '@ngneat/until-destroy';
 import {ModalWinComponent} from '../page/modal-win/modal-win.component';
 
 @UntilDestroy()
@@ -39,6 +36,7 @@ export class CustomModalService {
     this.markerName = markerName;
     this.rate = rating;
     this.indeterminateItems = indeterminateItems;
+
   }
 
   onCancelCreation(): void {
@@ -73,54 +71,16 @@ export class CustomModalService {
   }
 
   addInfoMarkerModal(nameAddress: string, lat: number, lng: number): void {
+
     const modal: NzModalRef = this._modalService.create({
       nzTitle: nameAddress,
       nzContent: ModalWinComponent,
-      nzFooter: [
-        {
-          label: 'Отменить',
-          shape: 'round',
-          onClick: () => {
-            modal.destroy();
-            nameAddress = '';
-          },
-        },
-        {
-          label: 'Сохранить',
-          type: 'primary',
-          shape: 'round',
-          onClick: (modalWinComponent: ModalWinComponent) => {
-            modalWinComponent.passDataToService();
-            const sendData: TCreateMarkerBody = {
-              name: this.markerName,
-              location: {
-                lat: lat,
-                long: lng,
-                name_address: nameAddress,
-              },
-              rate: this.rate,
-              barrier_free_elements: this.indeterminateItems,
-            };
-            this.markerService
-              .createMarker(sendData)
-              .pipe(untilDestroyed(this))
-              .subscribe({
-                error: () => {
-                  this.errorMessageModal();
-                },
-                complete: () => {
-                  modal.destroy();
-                  this.completeMessageModal();
-                  this.markerName = '';
-                  this.rate = 0;
-                  this.indeterminateItems = [];
-                },
-              });
-          },
-        },
-      ],
+      nzFooter: null,
     });
     modal.componentInstance!.addInfo = true;
+    modal.componentInstance!.lat = lat;
+    modal.componentInstance!.long = lng;
+    modal.componentInstance!.nameAddress = nameAddress;
   }
 
   completeMessageModal(): void {

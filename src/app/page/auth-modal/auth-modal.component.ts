@@ -1,10 +1,5 @@
 import {Component} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  Validators,
-} from '@angular/forms';
+import {FormControl, FormGroup, NonNullableFormBuilder, Validators,} from '@angular/forms';
 import {TAuth} from '../../api/interfaces/marker.interface';
 import {CustomModalService} from '../../services/custom-modal.service';
 import {NzModalRef} from 'ng-zorro-antd/modal';

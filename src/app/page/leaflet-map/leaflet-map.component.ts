@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {finalize, take} from 'rxjs';
+import {Component} from '@angular/core';
+import {finalize} from 'rxjs';
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 import {MapService} from 'src/app/services/map.service';
 import {MarkerService} from 'src/app/api/services/marker.service';
