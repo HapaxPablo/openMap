@@ -9,8 +9,8 @@ import {
   DEFAULT_ZOOM,
   KRASNOYARSK_CENTER_COORD,
   MAX_ZOOM,
-  MIN_ZOOM
-} from "./constants/map.constants";
+  MIN_ZOOM,
+} from './constants/map.constants';
 
 type TMarkerList = {
   mapMarker: L.Marker;
@@ -22,16 +22,15 @@ type TMarkerList = {
   providedIn: 'root',
 })
 export class MapService {
-  private _map: L.Map;
-  private _markerLayer: L.FeatureGroup;
+  private _map!: L.Map;
+  private _markerLayer!: L.FeatureGroup;
   private _markerList: TMarkerList[] = [];
   private _cursor: L.Marker | null = null;
   private _defaultIcon: L.Icon;
-  house_number: number;
-  road: string;
-  private nameAddress: string;
+  house_number: number = 0;
+  road: string = '';
+  private nameAddress: string = '';
   isLoadingMapInit = true;
-
 
   constructor(
     private _http: HttpClient,
@@ -87,7 +86,7 @@ export class MapService {
       L.latLng(marker.location.lat, marker.location.long),
       {
         icon: this._defaultIcon,
-      }
+      },
     );
     addMarker.addTo(this._markerLayer);
     addMarker.on('click', () => {
@@ -100,7 +99,7 @@ export class MapService {
     });
   };
 
-  getBuildingVertices(event: L.LeafletMouseEvent) {
+  private getBuildingVertices(event: L.LeafletMouseEvent) {
     const lat = event.latlng.lat;
     const lng = event.latlng.lng;
     const apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&addressdetails=1&polygon_geojson=1&format=geojson`;
@@ -119,7 +118,7 @@ export class MapService {
           this.house_number = address.house_number;
           this.road = address.road;
           this.nameAddress = `${this.road}, д. ${this.house_number}`;
-          this.customModal.MarkerModal(this.nameAddress, lat, lng);
+          this.customModal.openMarkerModal(this.nameAddress, lat, lng);
         }
       });
   }
@@ -130,6 +129,7 @@ export class MapService {
 
   public onMapClick(event: L.LeafletMouseEvent): void {
     this.setCursorCoord(event.latlng);
+    this.getBuildingVertices(event);
   }
 
   public onMarkerClick(marker: TMarker): void {

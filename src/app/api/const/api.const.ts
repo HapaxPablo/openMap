@@ -1,6 +1,2 @@
-import {environment} from 'src/environments/environment';
-
-const apiUrl = environment.apiUrl;
-
-export const MARKERS = `${apiUrl}/marker`;
-export const MARKER = (id: string) => `${apiUrl}/marker/${id}/`;
+export const MARKERS = '/api/marker';
+export const MARKER = (id: string) => `/api/marker/${id}/`;

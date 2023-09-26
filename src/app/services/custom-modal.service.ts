@@ -1,30 +1,30 @@
-import {EventEmitter, Injectable, Output} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {MarkerService} from '../api/services/marker.service';
-import {TPatchMarker,} from '../api/interfaces/marker.interface';
+import {TPatchMarkerBody} from '../api/interfaces/marker.interface';
 import {AuthModalComponent} from '../page/auth-modal/auth-modal.component';
 import {UntilDestroy} from '@ngneat/until-destroy';
-import {ModalWinComponent} from '../page/modal-win/modal-win.component';
+import {ModalWinComponent} from '../components/modal-win/modal-win.component';
+import {ModalService} from './modal.service';
 
 @UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
 export class CustomModalService {
-  @Output() cancelCreation: EventEmitter<void> = new EventEmitter<void>();
-
   showInfo: boolean = false;
   addInfo: boolean = false;
   updateInfo: boolean = false;
   logInModal: boolean = false;
 
-  markerName: string;
-  rate: number;
-  indeterminateItems: string[];
+  markerName: string = '';
+  rate: number = 0;
+  indeterminateItems: string[] = [];
 
   constructor(
-    private _modalService: NzModalService,
+    private _nzModalService: NzModalService,
     private markerService: MarkerService,
+    private _modalService: ModalService,
   ) {
   }
 
@@ -36,24 +36,18 @@ export class CustomModalService {
     this.markerName = markerName;
     this.rate = rating;
     this.indeterminateItems = indeterminateItems;
-
   }
 
-  onCancelCreation(): void {
-    this.cancelCreation.emit();
-  }
-
-  MarkerModal(nameAddress: string, lat: number, lng: number): void {
-    const modal: NzModalRef = this._modalService.create({
+  openMarkerModal(nameAddress: string, lat: number, lng: number): void {
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: nameAddress,
-      nzContent: 'Вы действительно хотите добавить организацию?',
+      nzContent: 'Вы действительно хотите заполнить маркер?',
       nzFooter: [
         {
           label: 'Отменить',
           shape: 'round',
           onClick: () => {
             modal.destroy();
-            this.onCancelCreation();
             nameAddress = '';
           },
         },
@@ -71,8 +65,7 @@ export class CustomModalService {
   }
 
   addInfoMarkerModal(nameAddress: string, lat: number, lng: number): void {
-
-    const modal: NzModalRef = this._modalService.create({
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: nameAddress,
       nzContent: ModalWinComponent,
       nzFooter: null,
@@ -83,42 +76,8 @@ export class CustomModalService {
     modal.componentInstance!.nameAddress = nameAddress;
   }
 
-  completeMessageModal(): void {
-    const modal: NzModalRef = this._modalService.create({
-      nzTitle: 'Успешно',
-      nzContent: 'Ваш маркер был успешно добавлен',
-      nzFooter: [
-        {
-          label: 'Закрыть',
-          shape: 'round',
-          type: 'primary',
-          onClick: () => {
-            modal.destroy();
-          },
-        },
-      ],
-    });
-  }
-
-  errorMessageModal(): void {
-    const modal: NzModalRef = this._modalService.create({
-      nzTitle: 'Ошибка!!!',
-      nzContent: 'Проверьте что вы заполнили все поля!!!',
-      nzFooter: [
-        {
-          label: 'Закрыть',
-          shape: 'round',
-          type: 'primary',
-          onClick: () => {
-            modal.destroy();
-          },
-        },
-      ],
-    });
-  }
-
   successAuthMessageModal(): void {
-    const modal: NzModalRef = this._modalService.create({
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: 'Успешно',
       nzContent: 'Вы успешно вошли в аккаунт',
       nzFooter: [
@@ -135,7 +94,7 @@ export class CustomModalService {
   }
 
   errorAuthMessageModal(): void {
-    const modal: NzModalRef = this._modalService.create({
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: 'Ошибка!!!',
       nzContent: 'Войдите в аккаунт!!!',
       nzFooter: [
@@ -167,7 +126,7 @@ export class CustomModalService {
     barrierFreeElements: string[],
     _id: string,
   ): void {
-    const modal: NzModalRef = this._modalService.create({
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: name,
       nzContent: ModalWinComponent,
       nzClosable: false,
@@ -203,7 +162,7 @@ export class CustomModalService {
     barrierFreeElements: string[],
     _id: string,
   ) {
-    const modal: NzModalRef = this._modalService.create({
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: name,
       nzContent: ModalWinComponent,
       nzClosable: false,
@@ -214,19 +173,19 @@ export class CustomModalService {
           type: 'primary',
           onClick: (modalWinComponent: ModalWinComponent) => {
             modalWinComponent.passDataToService();
-            const sendData: TPatchMarker = {
+            const sendData: TPatchMarkerBody = {
               _id: _id,
               name: this.markerName,
               rate: this.rate,
-              barrier_free_elements: this.indeterminateItems,
+              barrierFreeElements: this.indeterminateItems,
             };
             this.markerService.patchMarkerById(_id, sendData).subscribe({
               error: () => {
-                this.errorMessageModal();
+                this._modalService.errorMessageModal();
               },
               complete: () => {
                 modal.destroy();
-                this.completeMessageModal();
+                this._modalService.completeMessageModal();
               },
             });
           },
@@ -248,7 +207,7 @@ export class CustomModalService {
   }
 
   authModal() {
-    const modal: NzModalRef = this._modalService.create({
+    const modal: NzModalRef = this._nzModalService.create({
       nzTitle: 'Авторизация',
       nzContent: AuthModalComponent,
       nzFooter: [

@@ -1,20 +1,22 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {
-  createMarkerBody,
-  markerTransformer,
-  patchMarkerBody,
   TCreateMarkerBody,
   TMarker,
   TMarkerDTO,
-  TPatchMarker,
   TPatchMarkerBody,
   TPatchMarkerDTO,
 } from '../interfaces/marker.interface';
 import {catchError, map, Observable, throwError} from 'rxjs';
 import {MARKER, MARKERS} from '../const/api.const';
 import {Router} from '@angular/router';
-import {NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {
+  createMarkerBodyDTO,
+  markerTransformer,
+  patchMarkerBody,
+  patchMarkerDTO,
+} from '../interfaces/marker.transformer';
+import {ModalService} from 'src/app/services/modal.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,27 +25,18 @@ export class MarkerService {
   constructor(
     private _http: HttpClient,
     private _router: Router,
-    private _modalService: NzModalService,
+    private _modalService: ModalService,
   ) {
   }
 
-  errorMessageModal(): void {
-    const modal: NzModalRef = this._modalService.create({
-      nzTitle: 'Ошибка!!!',
-      nzContent: 'Сервер не отвечает, повторите попытку позже!!!',
-      nzFooter: [],
-      nzClosable: false,
-      nzMaskClosable: false,
-    });
-  }
-
   createMarker(data: TCreateMarkerBody): Observable<TMarker> {
-    const body = createMarkerBody(data);
+    const body = createMarkerBodyDTO(data);
     return this._http
       .post<TMarkerDTO>(MARKERS, body)
       .pipe(map(markerTransformer));
   }
 
+  // сделать типа пагинации на бэке, чтобы можно было получать не все (определенное кол-во).
   getMarkers(): Observable<TMarker[]> {
     return this._http.get<TMarkerDTO[]>(MARKERS).pipe(
       map((groupedMarkers) => groupedMarkers.map(markerTransformer)),
@@ -60,11 +53,11 @@ export class MarkerService {
   patchMarkerById(
     _id: string,
     data: TPatchMarkerBody,
-  ): Observable<TPatchMarker> {
+  ): Observable<TPatchMarkerBody> {
     const body = patchMarkerBody(data);
     return this._http
       .patch<TPatchMarkerDTO>(MARKER(_id.toString()), body)
-      .pipe(map(patchMarkerBody));
+      .pipe(map(patchMarkerDTO));
   }
 
   private _handleError = (error: HttpErrorResponse) => {
@@ -72,7 +65,7 @@ export class MarkerService {
       this._router.navigate(['/404']);
     }
     return throwError(() => {
-      this.errorMessageModal();
+      this._modalService.errorMessageModal();
     });
   };
 }

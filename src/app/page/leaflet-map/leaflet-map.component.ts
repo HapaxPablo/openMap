@@ -1,11 +1,9 @@
-import {Component} from '@angular/core';
-import {finalize} from 'rxjs';
-import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
-import {MapService} from 'src/app/services/map.service';
-import {MarkerService} from 'src/app/api/services/marker.service';
-import {CustomModalService} from 'src/app/services/custom-modal.service';
+import { Component } from '@angular/core';
+import { finalize } from 'rxjs';
+import { MapService } from 'src/app/services/map.service';
+import { MarkerService } from 'src/app/api/services/marker.service';
+import { CustomModalService } from 'src/app/services/custom-modal.service';
 
-@UntilDestroy()
 @Component({
   selector: 'app-leaflet-map',
   templateUrl: './leaflet-map.component.html',
@@ -13,17 +11,16 @@ import {CustomModalService} from 'src/app/services/custom-modal.service';
 })
 export class LeafletMapComponent {
   leafletOptions: L.MapOptions = this.mapService.mapOpt();
-  houseNumber: number;
-  road: string;
-  nameAddress: string;
+  houseNumber: number = 0;
+  road: string = '';
+  nameAddress: string = '';
   isLoadingMapInit = true;
 
   constructor(
     private mapService: MapService,
     private markerService: MarkerService,
     private modalService: CustomModalService,
-  ) {
-  }
+  ) {}
 
   onMapReady(map: L.Map) {
     this.markerService
@@ -32,7 +29,6 @@ export class LeafletMapComponent {
         finalize(() => {
           this.isLoadingMapInit = false;
         }),
-        untilDestroyed(this),
       )
       .subscribe((markers) => {
         this.mapService.initMap(map);
@@ -44,7 +40,6 @@ export class LeafletMapComponent {
 
   onClickMap(event: L.LeafletMouseEvent): void {
     this.mapService.onMapClick(event);
-    this.mapService.getBuildingVertices(event);
   }
 
   openAuthModal(): void {
